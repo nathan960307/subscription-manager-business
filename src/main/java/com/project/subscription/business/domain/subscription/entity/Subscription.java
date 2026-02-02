@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "subscription")
-public class Subscription {
+public class Subscription { // 사용자의 현재 구독 상태를 나타내는 테이블
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
