@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "subscription_billing_history")
-public class SubscriptionBillingHistory { // ㄱ
+public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : 구독에 대한 결제 이력을 기록하는 테이블
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
