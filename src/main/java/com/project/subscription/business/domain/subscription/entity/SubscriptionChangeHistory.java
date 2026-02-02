@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "subscription_change_history")
-public class SubscriptionChangeHistory {
+public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상태/속성 변경 이력을 남기는 엔티티
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
