@@ -24,16 +24,7 @@ public class SubscriptionService {
         // 2. setter 방식
         // 3. 빌더 방식
 
-        SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.builder()
-                .id(subscription.getId())
-                .userId(subscription.getUserId())
-                .serviceId(subscription.getServiceId())
-                .price(subscription.getPrice())
-                .billingCycle(subscription.getBillingCycle())
-                .status(subscription.getStatus())
-                .nextBillingDate(subscription.getNextBillingDate())
-                .autoRenew(subscription.isAutoRenew())
-                .build();
+        SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(subscription);
 
         return subscriptionInternalDto;
     }
