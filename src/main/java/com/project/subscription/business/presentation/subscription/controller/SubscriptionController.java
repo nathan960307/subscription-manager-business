@@ -19,13 +19,12 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
+    // complete
     // 구독 상세 조회
     @GetMapping("/{id}")
     public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long id) {
 
         SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(id);
-
-        // subscription 을 SubscriptionResponse로 포장 필요
 
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
 
