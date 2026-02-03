@@ -27,7 +27,9 @@ public class SubscriptionController {
 
         // subscription 을 SubscriptionResponse로 포장 필요
 
-        return null;
+        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
+
+        return subscriptionDetailResponse;
     }
 
     // 내 구독 목록 조회
