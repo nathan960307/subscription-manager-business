@@ -4,7 +4,7 @@ import com.project.subscription.business.application.subscription.service.Subscr
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionDetailResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionListResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/subscriptions")
+@RequiredArgsConstructor
 public class SubscriptionController {
 
-    @Autowired
-    private SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
 
     // 구독 상세 조회
     @GetMapping("/{id}")
