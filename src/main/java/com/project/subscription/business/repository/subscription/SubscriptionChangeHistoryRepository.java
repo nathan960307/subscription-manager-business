@@ -8,8 +8,8 @@ import java.util.List;
 public interface SubscriptionChangeHistoryRepository extends JpaRepository<SubscriptionChangeHistory, Long> {
 
     // 구독 변경 내역 리스트 최신순 조회
-    List<SubscriptionChangeHistory> findBySubscriptionIdOrderByChangedAtDesc(Long subscriptionId);
+    List<SubscriptionChangeHistory> findBySubscriptionIdAndUserIdOrderByChangedAtDesc(Long userId, Long subscriptionId);
 
-    // 과거순
-    List<SubscriptionChangeHistory> findBySubscriptionIdOrderByChangedAtAsc(Long subscriptionId);
+    // 과거순 조회
+    List<SubscriptionChangeHistory> findBySubscriptionIdAndUserIdOrderByChangedAtAsc(Long userId, Long subscriptionId);
 }

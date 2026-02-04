@@ -1,7 +1,10 @@
 package com.project.subscription.business.application.subscription.service;
 
 import com.project.subscription.business.domain.subscription.entity.Subscription;
+import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
+import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepositoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import java.util.List;
 public class SubscriptionService {
 
     private final SubscriptionRepositoryRepository subscriptionRepository; // 구독 repository
+    private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository;
 
     public SubscriptionInternalDto getSubscriptionDetail(Long subscriptionId) { // 구독 서비스 단일 조회
         // 구독 ID 로 해당 서비스 상세 조회
@@ -38,6 +42,17 @@ public class SubscriptionService {
         List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
 
         return subscriptionInternalDtos;
+    }
+
+    public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) { // 구독 서비스 목록 조회
+
+        // 사용자,구독 별 변경 내역 조회
+        List<SubscriptionChangeHistory> subscriptionChangeHistories =subscriptionChangeHistoryRepository.findBySubscriptionIdAndUserIdOrderByChangedAtDesc(userId,subscriptionId);
+
+        // entity -> dto 변환
+        List<SubscriptionChangeHistoryInternalDto> subscriptionChangeHistoryInternalDtos = SubscriptionChangeHistoryInternalDto.fromEntities(subscriptionChangeHistories);
+
+        return subscriptionChangeHistoryInternalDtos;
     }
 
 

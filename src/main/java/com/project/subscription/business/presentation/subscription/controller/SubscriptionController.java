@@ -1,7 +1,10 @@
 package com.project.subscription.business.presentation.subscription.controller;
 
 import com.project.subscription.business.application.subscription.service.SubscriptionService;
+import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
+import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionChangeHistoryListResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionDetailResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionListResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,18 @@ public class SubscriptionController {
     }
 
     // 구독 결제 내역 조회
+    @GetMapping("/{subscriptionId}/changes")
+    public SubscriptionChangeHistoryListResponse getMySubscriptions(@PathVariable Long subscriptionId) {
+
+        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+
+        List<SubscriptionChangeHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionChangeHistories(userId,subscriptionId);
+
+        SubscriptionChangeHistoryListResponse subscriptionChangeHistoryListResponse = SubscriptionChangeHistoryListResponse.success(subscriptions);
+
+        return subscriptionChangeHistoryListResponse;
+
+    }
 
     // 구독 변경 내역 조회
 
