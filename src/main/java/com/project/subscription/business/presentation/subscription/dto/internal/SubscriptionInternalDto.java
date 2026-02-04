@@ -6,6 +6,8 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -20,6 +22,7 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
     private LocalDateTime nextBillingDate;
     private boolean autoRenew;
 
+    // entity -> dto
     public static SubscriptionInternalDto fromEntity(Subscription subscription) {
         return SubscriptionInternalDto.builder()
                 .id(subscription.getId())
@@ -31,5 +34,12 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
                 .nextBillingDate(subscription.getNextBillingDate())
                 .autoRenew(subscription.isAutoRenew())
                 .build();
+    }
+
+    // List<entity> -> List<dto>
+    public static List<SubscriptionInternalDto> fromEntities(List<Subscription> subscriptions) {
+        return subscriptions.stream()
+                .map(SubscriptionInternalDto::fromEntity)
+                .toList();
     }
 }
