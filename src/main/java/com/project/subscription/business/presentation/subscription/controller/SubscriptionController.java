@@ -35,14 +35,20 @@ public class SubscriptionController {
     @GetMapping("/me")
     public SubscriptionListResponse getMySubscriptions() {
 
-        List<SubscriptionInternalDto> subscriptions = subscriptionService.getMySubscriptions();
+        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
-        // subscriptions 을 SubscriptionResponse로 포장 필요
+        List<SubscriptionInternalDto> subscriptions = subscriptionService.getMySubscriptions(userId);
+
+        SubscriptionListResponse subscriptionListResponse = SubscriptionListResponse.success(subscriptions);
 
 
-        return null;
+        return subscriptionListResponse;
 
     }
+
+    // 구독 결제 내역 조회
+
+    // 구독 변경 내역 조회
 
 
 
