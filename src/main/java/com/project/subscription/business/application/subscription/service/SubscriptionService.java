@@ -2,7 +2,7 @@ package com.project.subscription.business.application.subscription.service;
 
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
-import com.project.subscription.business.repository.subscription.SubscriptionRepository;
+import com.project.subscription.business.repository.subscription.SubscriptionRepositoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubscriptionService {
 
-    private final SubscriptionRepository subscriptionRepository; // 구독 repository
+    private final SubscriptionRepositoryRepository subscriptionRepository; // 구독 repository
 
     public SubscriptionInternalDto getSubscriptionDetail(Long subscriptionId) { // 구독 서비스 단일 조회
         // 구독 ID 로 해당 서비스 상세 조회

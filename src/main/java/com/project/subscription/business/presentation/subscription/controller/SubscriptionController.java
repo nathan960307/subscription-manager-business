@@ -31,6 +31,7 @@ public class SubscriptionController {
         return subscriptionDetailResponse;
     }
 
+    // complete
     // 내 구독 목록 조회
     @GetMapping("/me")
     public SubscriptionListResponse getMySubscriptions() {
@@ -40,7 +41,6 @@ public class SubscriptionController {
         List<SubscriptionInternalDto> subscriptions = subscriptionService.getMySubscriptions(userId);
 
         SubscriptionListResponse subscriptionListResponse = SubscriptionListResponse.success(subscriptions);
-
 
         return subscriptionListResponse;
 
