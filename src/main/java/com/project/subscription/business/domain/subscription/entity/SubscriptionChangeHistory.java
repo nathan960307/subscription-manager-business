@@ -17,6 +17,9 @@ public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 변경 기록 ID
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId; // 사용자 ID
+
     @Column(name = "subscription_id", nullable = false)
     private Long subscriptionId; // 구독 ID
 
