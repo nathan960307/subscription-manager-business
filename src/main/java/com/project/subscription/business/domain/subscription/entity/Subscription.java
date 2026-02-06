@@ -1,9 +1,7 @@
 package com.project.subscription.business.domain.subscription.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +9,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscription")
 public class Subscription { // 사용자의 현재 구독 상태를 나타내는 테이블
 
