@@ -6,12 +6,15 @@ import com.project.subscription.business.domain.subscription.entity.Subscription
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepositoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -48,6 +51,36 @@ public class SubscriptionService {
         List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
 
         return subscriptionInternalDtos;
+    }
+
+    // 구독 서비스 추가
+    @Transactional
+    public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextBillingDate =
+                "YEARLY".equals(request.getBillingCycle())
+                        ? now.plusYears(1)
+                        : now.plusMonths(1); // MONTHLY 기본
+        // DTO -> entity
+        Subscription subscription = Subscription.builder()
+                .userId(userId)
+                .serviceId(request.getServiceId())
+                .price(request.getPrice())
+                .billingCycle(request.getBillingCycle())
+
+                .status("ACTIVE")
+                .autoRenew(true)
+                .nextBillingDate(nextBillingDate)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        Subscription saved =  subscriptionRepository.save(subscription);
+
+        SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(saved);
+
+        return subscriptionInternalDto;
     }
 
     // 구독 서비스 변경 내역 조회
