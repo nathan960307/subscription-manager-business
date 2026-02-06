@@ -53,7 +53,7 @@ public class SubscriptionController {
 
     // 구독 변경 내역 조회
     @GetMapping("/{subscriptionId}/changes")
-    public SubscriptionChangeHistoryListResponse getMySubscriptions(@PathVariable Long subscriptionId) {
+    public SubscriptionChangeHistoryListResponse getMySubscriptionChangeHistories(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
@@ -67,7 +67,7 @@ public class SubscriptionController {
 
     // 구독 결제 내역 조회
     @GetMapping("/{subscriptionId}/billings")
-    public SubscriptionBillingHistoryListResponse getMySubscriptions(@PathVariable Long subscriptionId) {
+    public SubscriptionBillingHistoryListResponse getMySubscriptionBillingHistories(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
