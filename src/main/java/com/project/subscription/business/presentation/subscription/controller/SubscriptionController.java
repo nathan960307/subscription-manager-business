@@ -1,19 +1,16 @@
 package com.project.subscription.business.presentation.subscription.controller;
 
 import com.project.subscription.business.application.subscription.service.SubscriptionService;
-import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionBillingHistoryListResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionChangeHistoryListResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionDetailResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionListResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +48,22 @@ public class SubscriptionController {
 
     }
 
+    // 구독 생성
+    @PostMapping
+    public SubscriptionDetailResponse createSubscription(@RequestBody SubscriptionCreateRequest request) {
+
+        Long userId = 1L; // TODO: 인증 도입 후 교체
+
+        SubscriptionInternalDto subscription = subscriptionService.createSubscription(userId, request);
+
+        SubscriptionDetailResponse subscriptionListResponse = SubscriptionDetailResponse.success(subscription);
+
+        return subscriptionListResponse;
+    }
+
+
+
+    // complete
     // 구독 변경 내역 조회
     @GetMapping("/{subscriptionId}/changes")
     public SubscriptionChangeHistoryListResponse getMySubscriptionChangeHistories(@PathVariable Long subscriptionId) {
@@ -65,6 +78,7 @@ public class SubscriptionController {
 
     }
 
+    // complete
     // 구독 결제 내역 조회
     @GetMapping("/{subscriptionId}/billings")
     public SubscriptionBillingHistoryListResponse getMySubscriptionBillingHistories(@PathVariable Long subscriptionId) {
