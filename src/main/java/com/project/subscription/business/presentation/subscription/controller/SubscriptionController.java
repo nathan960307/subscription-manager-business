@@ -5,6 +5,7 @@ import com.project.subscription.business.presentation.subscription.dto.internal.
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionBillingHistoryListResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionChangeHistoryListResponse;
 import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionDetailResponse;
@@ -48,6 +49,7 @@ public class SubscriptionController {
 
     }
 
+    //complete
     // 구독 생성
     @PostMapping
     public SubscriptionDetailResponse createSubscription(@RequestBody SubscriptionCreateRequest request) {
@@ -61,7 +63,20 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
+    // complete
+    // 구독 수정
+    @PatchMapping("/{subscriptionId}")
+    public SubscriptionDetailResponse updateSubscription(@PathVariable Long subscriptionId,
+                                                         @RequestBody SubscriptionUpdateRequest request) {
 
+        Long userId = 1L; // TODO: 인증 도입 후 교체
+
+        SubscriptionInternalDto subscription = subscriptionService.updateSubscription(userId,subscriptionId, request);
+
+        SubscriptionDetailResponse subscriptionListResponse = SubscriptionDetailResponse.success(subscription);
+
+        return subscriptionListResponse;
+    }
 
     // complete
     // 구독 변경 내역 조회
