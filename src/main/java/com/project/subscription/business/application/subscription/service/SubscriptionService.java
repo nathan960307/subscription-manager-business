@@ -7,6 +7,7 @@ import com.project.subscription.business.presentation.subscription.dto.internal.
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
@@ -82,6 +83,33 @@ public class SubscriptionService {
 
         return subscriptionInternalDto;
     }
+
+    // 구독 서비스 수정
+    @Transactional
+    public SubscriptionInternalDto updateSubscription(Long userId,
+                                                      Long subscriptionId,
+                                                      SubscriptionUpdateRequest request) {
+
+        Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                        .orElseThrow(() -> new RuntimeException("구독 없음"));
+
+        // 가격 변경
+        if (request.getPrice() != null) {
+            subscription.changePrice(request.getPrice());
+        }
+
+        // 결제 주기 변경
+        if (request.getBillingCycle() != null) {
+            subscription.changeBillingCycle(request.getBillingCycle());
+        }
+
+        Subscription saved =  subscriptionRepository.save(subscription);
+
+        SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(saved);
+
+        return subscriptionInternalDto;
+    }
+
 
     // 구독 서비스 변경 내역 조회
     public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) {
