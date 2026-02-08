@@ -9,7 +9,7 @@ import com.project.subscription.business.presentation.subscription.dto.internal.
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
-import com.project.subscription.business.repository.subscription.SubscriptionRepositoryRepository;
+import com.project.subscription.business.repository.subscription.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubscriptionService {
 
-    private final SubscriptionRepositoryRepository subscriptionRepository; // 구독 repository
+    private final SubscriptionRepository subscriptionRepository; // 구독 repository
     private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository; // 구독 변경 내역 repository
     private final SubscriptionBillingHistoryRepository subscriptionBillingHistoryRepository; // 구독 결제 내역 repository
 
