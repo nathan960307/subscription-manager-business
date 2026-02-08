@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscription")
 public class Subscription { // 사용자의 현재 구독 상태를 나타내는 테이블
 
@@ -58,4 +58,22 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     @Column(name = "canceled_at")
     private LocalDateTime canceledAt; // 구독 취소일
+
+    // 도메인 메서드
+    public void changePrice(BigDecimal price) {
+        this.price = price;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeBillingCycle(String billingCycle) {
+        this.billingCycle = billingCycle;
+
+        LocalDateTime now = LocalDateTime.now();
+        this.nextBillingDate =
+                "YEARLY".equals(billingCycle)
+                        ? now.plusYears(1)
+                        : now.plusMonths(1);
+
+        this.updatedAt = now;
+    }
 }
