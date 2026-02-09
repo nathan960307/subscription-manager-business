@@ -117,7 +117,8 @@ public class SubscriptionService {
         Subscription subscription = subscriptionRepository.findByIdAndUserId(userId, subscriptionId)
                 .orElseThrow(() -> new RuntimeException("구독 없음"));
 
-        subscriptionRepository.delete(subscription);
+//        subscriptionRepository.delete(subscription); // hard delete
+        subscription.delete(); // soft delete
     }
 
 
