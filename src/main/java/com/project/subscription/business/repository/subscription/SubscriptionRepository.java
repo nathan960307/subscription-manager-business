@@ -4,9 +4,13 @@ import com.project.subscription.business.domain.subscription.entity.Subscription
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription,Long> {
 
     // 사용자 별 구독 서비스 목록 조회
     List<Subscription> findByUserId(Long userId);
+
+    // 사용자, 구독ID로 구독 entity 조회
+    Optional<Subscription> findByIdAndUserId(Long subscriptionId, Long userId);
 }
