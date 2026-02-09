@@ -110,6 +110,16 @@ public class SubscriptionService {
         return subscriptionInternalDto;
     }
 
+    // 구독 서비스 삭제(soft delete-논리 삭제)
+    @Transactional
+    public void deleteSubscription(Long userId, Long subscriptionId) {
+
+        Subscription subscription = subscriptionRepository.findByIdAndUserId(userId, subscriptionId)
+                .orElseThrow(() -> new RuntimeException("구독 없음"));
+
+        subscriptionRepository.delete(subscription);
+    }
+
 
     // 구독 서비스 변경 내역 조회
     public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) {
