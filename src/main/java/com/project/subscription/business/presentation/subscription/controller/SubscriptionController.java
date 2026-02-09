@@ -80,9 +80,12 @@ public class SubscriptionController {
 
     // 구독 삭제
     @DeleteMapping("/{subscriptionId}")
-    public SubscriptionDetailResponse deleteSubscription(@PathVariable Long subscriptionId) {
+    public void deleteSubscription(@PathVariable Long subscriptionId) {
 
-        return null;
+        Long userId = 1L; // TODO: 인증 도입 후 교체
+
+        subscriptionService.deleteSubscription(userId, subscriptionId);
+
     }
 
     // complete
