@@ -78,6 +78,13 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
+    // 구독 삭제
+    @DeleteMapping("/{subscriptionId}")
+    public SubscriptionDetailResponse deleteSubscription(@PathVariable Long subscriptionId) {
+
+        return null;
+    }
+
     // complete
     // 구독 변경 내역 조회
     @GetMapping("/{subscriptionId}/changes")
