@@ -36,7 +36,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     @Column(nullable = false)
     private String status; // 구독 상태
-    // ACTIVE, CANCELED, PAUSED (enum은 나중)
+    // ACTIVE, CANCELED, PAUSED, DELETED(enum은 나중)
 
     @Column(name = "auto_renew", nullable = false)
     private boolean autoRenew = true; // 자동 갱신 여부
@@ -59,12 +59,20 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "canceled_at")
     private LocalDateTime canceledAt; // 구독 취소일
 
-    // 도메인 메서드
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt; // 삭제일
+
+    ///
+    /// 도메인 메서드
+    ///
+
+    // 가격 변경
     public void changePrice(BigDecimal price) {
         this.price = price;
         this.updatedAt = LocalDateTime.now();
     }
 
+    // 결제 주기 변경
     public void changeBillingCycle(String billingCycle) {
         this.billingCycle = billingCycle;
 
@@ -75,5 +83,15 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
                         : now.plusMonths(1);
 
         this.updatedAt = now;
+    }
+
+    // 구독 삭제
+    public void delete(){
+        if("DELETED".equals(this.status)){
+            throw new IllegalStateException("이미 삭제된 구독 입니다");
+        }
+        this.updatedAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
+        this.status = "DELETED";
     }
 }
