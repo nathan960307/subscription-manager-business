@@ -99,10 +99,11 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 삭제(soft delete-논리 삭제)
+    // complete
     @Transactional
     public void deleteSubscription(Long userId, Long subscriptionId) {
 
-        Subscription subscription = subscriptionRepository.findByIdAndUserId(userId, subscriptionId)
+        Subscription subscription = subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId, subscriptionId)
                 .orElseThrow(() -> new RuntimeException("구독 없음"));
 
 //        subscriptionRepository.delete(subscription); // hard delete

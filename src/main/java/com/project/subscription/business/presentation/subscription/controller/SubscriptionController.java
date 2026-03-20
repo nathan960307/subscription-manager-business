@@ -81,8 +81,8 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
-    //complete
     // 구독 삭제
+    //complete
     @DeleteMapping("/{subscriptionId}")
     public void deleteSubscription(@PathVariable Long subscriptionId) {
 
