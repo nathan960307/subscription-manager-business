@@ -27,16 +27,16 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price; // 구독 가격
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "billing_cycle", nullable = false)
-    private String billingCycle; // 결제 주기
-    // MONTHLY, YEARLY (enum은 나중)
+    private BillingCycle  billingCycle; // 결제 주기
 
     @Column(name = "next_billing_date", nullable = false)
     private LocalDateTime nextBillingDate; // 다음 결제일
 
-    @Column(nullable = false)
-    private String status; // 구독 상태
-    // ACTIVE, CANCELED, PAUSED, DELETED(enum은 나중)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "subscription_status",nullable = false)
+    private SubscriptionStatus subscriptionStatus; // 구독 상태
 
     @Column(name = "auto_renew", nullable = false)
     private boolean autoRenew = true; // 자동 갱신 여부
@@ -52,6 +52,9 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 구독 등록일
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt; // 수정일
@@ -73,12 +76,12 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     }
 
     // 결제 주기 변경
-    public void changeBillingCycle(String billingCycle) {
+    public void changeBillingCycle(BillingCycle billingCycle) {
         this.billingCycle = billingCycle;
 
         LocalDateTime now = LocalDateTime.now();
         this.nextBillingDate =
-                "YEARLY".equals(billingCycle)
+                billingCycle == BillingCycle.YEARLY
                         ? now.plusYears(1)
                         : now.plusMonths(1);
 
@@ -87,11 +90,11 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     // 구독 삭제
     public void delete(){
-        if("DELETED".equals(this.status)){
+        if(this.subscriptionStatus == SubscriptionStatus.DELETED){
             throw new IllegalStateException("이미 삭제된 구독 입니다");
         }
         this.updatedAt = LocalDateTime.now();
         this.deletedAt = LocalDateTime.now();
-        this.status = "DELETED";
+        this.subscriptionStatus = SubscriptionStatus.DELETED;
     }
 }
