@@ -26,6 +26,19 @@ public class SubscriptionService {
     private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository; // 구독 변경 내역 repository
     private final SubscriptionBillingHistoryRepository subscriptionBillingHistoryRepository; // 구독 결제 내역 repository
 
+
+    // 구독 서비스 목록 조회
+    public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
+
+        // 사용자별 구독 서비스 목록 조회
+        List<Subscription> subscriptions =subscriptionRepository.findByUserId(userId);
+
+        // entity -> dto 변환
+        List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
+
+        return subscriptionInternalDtos;
+    }
+
     // 구독 서비스 단일 조회
     public SubscriptionInternalDto getSubscriptionDetail(Long subscriptionId) {
         // 구독 ID 로 해당 서비스 상세 조회
@@ -42,17 +55,7 @@ public class SubscriptionService {
         return subscriptionInternalDto;
     }
 
-    // 구독 서비스 목록 조회
-    public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
 
-        // 사용자별 구독 서비스 목록 조회
-        List<Subscription> subscriptions =subscriptionRepository.findByUserId(userId);
-
-        // entity -> dto 변환
-        List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
-
-        return subscriptionInternalDtos;
-    }
 
     // 구독 서비스 추가
     @Transactional
