@@ -45,6 +45,7 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 단일 조회
+    // complete
     public SubscriptionInternalDto getSubscriptionDetail(Long userId, Long subscriptionId) {
 
         // 구독 ID 로 해당 서비스 상세 조회
