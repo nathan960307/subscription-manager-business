@@ -77,8 +77,8 @@ public class SubscriptionService {
                                                       Long subscriptionId,
                                                       SubscriptionUpdateRequest request) {
 
-        Subscription subscription = subscriptionRepository.findById(subscriptionId)
-                        .orElseThrow(() -> new RuntimeException("구독 없음"));
+        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         // 가격 변경
         if (request.getPrice() != null) {
