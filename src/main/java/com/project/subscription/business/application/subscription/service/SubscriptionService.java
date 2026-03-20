@@ -32,10 +32,13 @@ public class SubscriptionService {
     public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
 
         // 사용자별 구독 서비스 목록 조회
-        List<Subscription> subscriptions =subscriptionRepository.findByUserId(userId);
+        List<Subscription> subscriptions =subscriptionRepository.findAllByUserIdAndDeletedFalse(userId);
 
         // entity -> dto 변환
-        List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
+        List<SubscriptionInternalDto> subscriptionInternalDtos =
+                subscriptions.stream()
+                .map(SubscriptionInternalDto::fromEntity)
+                .toList();
 
         return subscriptionInternalDtos;
     }
