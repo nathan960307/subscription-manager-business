@@ -29,6 +29,7 @@ public class SubscriptionService {
 
 
     // 구독 서비스 목록 조회
+    // complete
     public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
 
         // 사용자별 구독 서비스 목록 조회

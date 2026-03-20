@@ -23,6 +23,7 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     // 내 구독 목록 조회
+    // complete
     @GetMapping
     public SubscriptionListResponse getMySubscriptions() {
 
