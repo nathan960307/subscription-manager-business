@@ -13,4 +13,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 
     // 사용자, 구독ID로 구독 entity 조회
     Optional<Subscription> findByIdAndUserId(Long subscriptionId, Long userId);
+
+    // 삭제 여부가 false인 구독 목록 조회
+    List<Subscription> findAllByUserIdAndDeletedFalse(Long userId);
 }
