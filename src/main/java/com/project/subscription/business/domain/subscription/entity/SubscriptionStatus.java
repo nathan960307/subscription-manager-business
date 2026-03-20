@@ -1,6 +1,6 @@
 package com.project.subscription.business.domain.subscription.entity;
 
-public enum status {
+public enum SubscriptionStatus {
     ACTIVE,
     CANCELED,
     PAUSED,
