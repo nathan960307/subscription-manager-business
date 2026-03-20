@@ -3,6 +3,7 @@ package com.project.subscription.business.application.subscription.service;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionBillingHistory;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
+import com.project.subscription.business.domain.subscription.entity.SubscriptionStatus;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -26,56 +27,42 @@ public class SubscriptionService {
     private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository; // 구독 변경 내역 repository
     private final SubscriptionBillingHistoryRepository subscriptionBillingHistoryRepository; // 구독 결제 내역 repository
 
-    // 구독 서비스 단일 조회
-    public SubscriptionInternalDto getSubscriptionDetail(Long subscriptionId) {
-        // 구독 ID 로 해당 서비스 상세 조회
-        Subscription subscription =subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
+
+    // 구독 서비스 목록 조회
+    // complete
+    public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
+
+        // 사용자별 구독 서비스 목록 조회
+        List<Subscription> subscriptions =subscriptionRepository.findAllByUserIdAndDeletedFalse(userId);
 
         // entity -> dto 변환
-        // 1. 생성자 방식
-        // 2. setter 방식
-        // 3. 빌더 방식
+        List<SubscriptionInternalDto> subscriptionInternalDtos =
+                subscriptions.stream()
+                .map(SubscriptionInternalDto::fromEntity)
+                .toList();
+
+        return subscriptionInternalDtos;
+    }
+
+    // 구독 서비스 단일 조회
+    // complete
+    public SubscriptionInternalDto getSubscriptionDetail(Long userId, Long subscriptionId) {
+
+        // 구독 ID 로 해당 서비스 상세 조회
+        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(subscription);
 
         return subscriptionInternalDto;
     }
 
-    // 구독 서비스 목록 조회
-    public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
-
-        // 사용자별 구독 서비스 목록 조회
-        List<Subscription> subscriptions =subscriptionRepository.findByUserId(userId);
-
-        // entity -> dto 변환
-        List<SubscriptionInternalDto> subscriptionInternalDtos = SubscriptionInternalDto.fromEntities(subscriptions);
-
-        return subscriptionInternalDtos;
-    }
-
-    // 구독 서비스 추가
+    // 구독 서비스 생성
+    // complete
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextBillingDate =
-                "YEARLY".equals(request.getBillingCycle())
-                        ? now.plusYears(1)
-                        : now.plusMonths(1); // MONTHLY 기본
-        // DTO -> entity
-        Subscription subscription = Subscription.builder()
-                .userId(userId)
-                .serviceId(request.getServiceId())
-                .price(request.getPrice())
-                .billingCycle(request.getBillingCycle())
-
-                .status("ACTIVE")
-                .autoRenew(true)
-                .nextBillingDate(nextBillingDate)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
+        Subscription subscription = Subscription.create(userId, request);
 
         Subscription saved =  subscriptionRepository.save(subscription);
 
@@ -85,13 +72,14 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 수정
+    // complete
     @Transactional
     public SubscriptionInternalDto updateSubscription(Long userId,
                                                       Long subscriptionId,
                                                       SubscriptionUpdateRequest request) {
 
-        Subscription subscription = subscriptionRepository.findById(subscriptionId)
-                        .orElseThrow(() -> new RuntimeException("구독 없음"));
+        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         // 가격 변경
         if (request.getPrice() != null) {
@@ -111,10 +99,11 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 삭제(soft delete-논리 삭제)
+    // complete
     @Transactional
     public void deleteSubscription(Long userId, Long subscriptionId) {
 
-        Subscription subscription = subscriptionRepository.findByIdAndUserId(userId, subscriptionId)
+        Subscription subscription = subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId, subscriptionId)
                 .orElseThrow(() -> new RuntimeException("구독 없음"));
 
 //        subscriptionRepository.delete(subscription); // hard delete

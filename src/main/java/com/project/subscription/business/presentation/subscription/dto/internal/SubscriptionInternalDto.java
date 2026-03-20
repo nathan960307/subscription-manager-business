@@ -1,6 +1,9 @@
 package com.project.subscription.business.presentation.subscription.dto.internal;
 
+import com.project.subscription.business.application.subscription.service.SubscriptionService;
+import com.project.subscription.business.domain.subscription.entity.BillingCycle;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
+import com.project.subscription.business.domain.subscription.entity.SubscriptionStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,8 +19,8 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
     private Long userId;
     private Long serviceId;
     private BigDecimal price;
-    private String billingCycle;
-    private String status;
+    private BillingCycle billingCycle;
+    private SubscriptionStatus subscriptionStatus;
     private LocalDateTime nextBillingDate;
     private boolean autoRenew;
 
@@ -29,16 +32,9 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
                 .serviceId(subscription.getServiceId())
                 .price(subscription.getPrice())
                 .billingCycle(subscription.getBillingCycle())
-                .status(subscription.getStatus())
+                .subscriptionStatus(subscription.getSubscriptionStatus())
                 .nextBillingDate(subscription.getNextBillingDate())
                 .autoRenew(subscription.isAutoRenew())
                 .build();
-    }
-
-    // List<entity> -> List<dto>
-    public static List<SubscriptionInternalDto> fromEntities(List<Subscription> subscriptions) {
-        return subscriptions.stream()
-                .map(SubscriptionInternalDto::fromEntity)
-                .toList();
     }
 }

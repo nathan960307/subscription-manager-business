@@ -22,21 +22,9 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    // complete
-    // 구독 상세 조회
-    @GetMapping("/{id}")
-    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long id) {
-
-        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(id);
-
-        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
-
-        return subscriptionDetailResponse;
-    }
-
-    // complete
     // 내 구독 목록 조회
-    @GetMapping("/me")
+    // complete
+    @GetMapping
     public SubscriptionListResponse getMySubscriptions() {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
@@ -49,8 +37,23 @@ public class SubscriptionController {
 
     }
 
-    //complete
+    // 구독 단일 조회
+    // complete
+    @GetMapping("/{subscriptionId}")
+    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long subscriptionId) {
+
+        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+
+        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(userId,subscriptionId);
+
+        // internal dto 를 response 로 포장
+        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
+
+        return subscriptionDetailResponse;
+    }
+
     // 구독 생성
+    //complete
     @PostMapping
     public SubscriptionDetailResponse createSubscription(@RequestBody SubscriptionCreateRequest request) {
 
@@ -63,8 +66,8 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
-    // complete
     // 구독 수정
+    // complete
     @PatchMapping("/{subscriptionId}")
     public SubscriptionDetailResponse updateSubscription(@PathVariable Long subscriptionId,
                                                          @RequestBody SubscriptionUpdateRequest request) {
@@ -79,6 +82,7 @@ public class SubscriptionController {
     }
 
     // 구독 삭제
+    //complete
     @DeleteMapping("/{subscriptionId}")
     public void deleteSubscription(@PathVariable Long subscriptionId) {
 
