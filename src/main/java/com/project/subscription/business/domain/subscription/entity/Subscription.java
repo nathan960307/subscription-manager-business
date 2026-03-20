@@ -124,5 +124,6 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         this.updatedAt = LocalDateTime.now();
         this.deletedAt = LocalDateTime.now();
         this.subscriptionStatus = SubscriptionStatus.DELETED;
+        this.deleted = true;
     }
 }
