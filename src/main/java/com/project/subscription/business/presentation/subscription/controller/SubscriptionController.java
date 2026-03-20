@@ -1,6 +1,7 @@
 package com.project.subscription.business.presentation.subscription.controller;
 
 import com.project.subscription.business.application.subscription.service.SubscriptionService;
+import com.project.subscription.business.global.response.ApiResponse;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -25,100 +26,89 @@ public class SubscriptionController {
     // 내 구독 목록 조회
     // complete
     @GetMapping
-    public SubscriptionListResponse getMySubscriptions() {
+    public ApiResponse<List<SubscriptionInternalDto>> getMySubscriptions() {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
         List<SubscriptionInternalDto> subscriptions = subscriptionService.getMySubscriptions(userId);
 
-        SubscriptionListResponse subscriptionListResponse = SubscriptionListResponse.success(subscriptions);
-
-        return subscriptionListResponse;
+        return ApiResponse.success(subscriptions);
 
     }
 
     // 구독 단일 조회
     // complete
     @GetMapping("/{subscriptionId}")
-    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long subscriptionId) {
+    public ApiResponse<SubscriptionInternalDto> getSubscriptionDetail(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
         SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(userId,subscriptionId);
 
-        // internal dto 를 response 로 포장
-        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
-
-        return subscriptionDetailResponse;
+        return ApiResponse.success(subscription);
     }
 
     // 구독 생성
     //complete
     @PostMapping
-    public SubscriptionDetailResponse createSubscription(@RequestBody SubscriptionCreateRequest request) {
+    public ApiResponse<SubscriptionInternalDto> createSubscription(@RequestBody SubscriptionCreateRequest request) {
 
         Long userId = 1L; // TODO: 인증 도입 후 교체
 
         SubscriptionInternalDto subscription = subscriptionService.createSubscription(userId, request);
 
-        SubscriptionDetailResponse subscriptionListResponse = SubscriptionDetailResponse.success(subscription);
-
-        return subscriptionListResponse;
+        return ApiResponse.success(subscription);
     }
 
     // 구독 수정
     // complete
     @PatchMapping("/{subscriptionId}")
-    public SubscriptionDetailResponse updateSubscription(@PathVariable Long subscriptionId,
+    public ApiResponse<SubscriptionInternalDto> updateSubscription(@PathVariable Long subscriptionId,
                                                          @RequestBody SubscriptionUpdateRequest request) {
 
         Long userId = 1L; // TODO: 인증 도입 후 교체
 
         SubscriptionInternalDto subscription = subscriptionService.updateSubscription(userId,subscriptionId, request);
 
-        SubscriptionDetailResponse subscriptionListResponse = SubscriptionDetailResponse.success(subscription);
-
-        return subscriptionListResponse;
+        return ApiResponse.success(subscription);
     }
 
     // 구독 삭제
     //complete
     @DeleteMapping("/{subscriptionId}")
-    public void deleteSubscription(@PathVariable Long subscriptionId) {
+    public ApiResponse<Void> deleteSubscription(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 교체
 
         subscriptionService.deleteSubscription(userId, subscriptionId);
+
+        return ApiResponse.success(null);
 
     }
 
     // complete
     // 구독 변경 내역 조회
     @GetMapping("/{subscriptionId}/changes")
-    public SubscriptionChangeHistoryListResponse getMySubscriptionChangeHistories(@PathVariable Long subscriptionId) {
+    public ApiResponse<List<SubscriptionChangeHistoryInternalDto>> getMySubscriptionChangeHistories(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
         List<SubscriptionChangeHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionChangeHistories(userId,subscriptionId);
 
-        SubscriptionChangeHistoryListResponse subscriptionChangeHistoryListResponse = SubscriptionChangeHistoryListResponse.success(subscriptions);
-
-        return subscriptionChangeHistoryListResponse;
+        return ApiResponse.success(subscriptions);
 
     }
 
     // complete
     // 구독 결제 내역 조회
     @GetMapping("/{subscriptionId}/billings")
-    public SubscriptionBillingHistoryListResponse getMySubscriptionBillingHistories(@PathVariable Long subscriptionId) {
+    public ApiResponse<List<SubscriptionBillingHistoryInternalDto>> getMySubscriptionBillingHistories(@PathVariable Long subscriptionId) {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
         List<SubscriptionBillingHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionBillingHistories(userId,subscriptionId);
 
-        SubscriptionBillingHistoryListResponse subscriptionBillingHistoryListResponse = SubscriptionBillingHistoryListResponse.success(subscriptions);
-
-        return subscriptionBillingHistoryListResponse;
+        return ApiResponse.success(subscriptions);
 
     }
 
