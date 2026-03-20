@@ -1,5 +1,6 @@
 package com.project.subscription.business.domain.subscription.entity;
 
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -68,6 +69,33 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     ///
     /// 도메인 메서드
     ///
+
+    // 구독 생성
+    public static Subscription create(Long userId, SubscriptionCreateRequest request) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Subscription subscription = new Subscription();
+
+        subscription.userId = userId;
+        subscription.serviceId = request.getServiceId();
+        subscription.price = request.getPrice();
+        subscription.billingCycle = request.getBillingCycle();
+
+        subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
+        subscription.autoRenew = true;
+
+        subscription.nextBillingDate =
+                request.getBillingCycle() == BillingCycle.YEARLY
+                        ? now.plusYears(1)
+                        : now.plusMonths(1);
+
+        subscription.createdAt = now;
+        subscription.updatedAt = now;
+
+        return subscription;
+    }
+
 
     // 가격 변경
     public void changePrice(BigDecimal price) {
