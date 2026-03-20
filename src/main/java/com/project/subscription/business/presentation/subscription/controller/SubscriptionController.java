@@ -7,11 +7,8 @@ import com.project.subscription.business.presentation.subscription.dto.internal.
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
-import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionBillingHistoryListResponse;
-import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionChangeHistoryListResponse;
-import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionDetailResponse;
-import com.project.subscription.business.presentation.subscription.dto.response.SubscriptionListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,22 +23,18 @@ public class SubscriptionController {
     // 내 구독 목록 조회
     // complete
     @GetMapping
-    public ApiResponse<List<SubscriptionInternalDto>> getMySubscriptions() {
-
-        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+    public ApiResponse<List<SubscriptionInternalDto>> getMySubscriptions(@AuthenticationPrincipal Long userId) {
 
         List<SubscriptionInternalDto> subscriptions = subscriptionService.getMySubscriptions(userId);
 
         return ApiResponse.success(subscriptions);
-
     }
 
     // 구독 단일 조회
     // complete
     @GetMapping("/{subscriptionId}")
-    public ApiResponse<SubscriptionInternalDto> getSubscriptionDetail(@PathVariable Long subscriptionId) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+    public ApiResponse<SubscriptionInternalDto> getSubscriptionDetail(@AuthenticationPrincipal Long userId,
+                                                                      @PathVariable Long subscriptionId) {
 
         SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(userId,subscriptionId);
 
@@ -51,9 +44,8 @@ public class SubscriptionController {
     // 구독 생성
     //complete
     @PostMapping
-    public ApiResponse<SubscriptionInternalDto> createSubscription(@RequestBody SubscriptionCreateRequest request) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 교체
+    public ApiResponse<SubscriptionInternalDto> createSubscription(@AuthenticationPrincipal Long userId,
+                                                                   @RequestBody SubscriptionCreateRequest request) {
 
         SubscriptionInternalDto subscription = subscriptionService.createSubscription(userId, request);
 
@@ -63,10 +55,9 @@ public class SubscriptionController {
     // 구독 수정
     // complete
     @PatchMapping("/{subscriptionId}")
-    public ApiResponse<SubscriptionInternalDto> updateSubscription(@PathVariable Long subscriptionId,
+    public ApiResponse<SubscriptionInternalDto> updateSubscription(@AuthenticationPrincipal Long userId,
+                                                                   @PathVariable Long subscriptionId,
                                                          @RequestBody SubscriptionUpdateRequest request) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 교체
 
         SubscriptionInternalDto subscription = subscriptionService.updateSubscription(userId,subscriptionId, request);
 
@@ -76,9 +67,8 @@ public class SubscriptionController {
     // 구독 삭제
     //complete
     @DeleteMapping("/{subscriptionId}")
-    public ApiResponse<Void> deleteSubscription(@PathVariable Long subscriptionId) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 교체
+    public ApiResponse<Void> deleteSubscription(@AuthenticationPrincipal Long userId,
+                                                @PathVariable Long subscriptionId) {
 
         subscriptionService.deleteSubscription(userId, subscriptionId);
 
@@ -89,9 +79,8 @@ public class SubscriptionController {
     // complete
     // 구독 변경 내역 조회
     @GetMapping("/{subscriptionId}/changes")
-    public ApiResponse<List<SubscriptionChangeHistoryInternalDto>> getMySubscriptionChangeHistories(@PathVariable Long subscriptionId) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+    public ApiResponse<List<SubscriptionChangeHistoryInternalDto>> getMySubscriptionChangeHistories(@AuthenticationPrincipal Long userId,
+                                                                                                    @PathVariable Long subscriptionId) {
 
         List<SubscriptionChangeHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionChangeHistories(userId,subscriptionId);
 
@@ -102,9 +91,8 @@ public class SubscriptionController {
     // complete
     // 구독 결제 내역 조회
     @GetMapping("/{subscriptionId}/billings")
-    public ApiResponse<List<SubscriptionBillingHistoryInternalDto>> getMySubscriptionBillingHistories(@PathVariable Long subscriptionId) {
-
-        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+    public ApiResponse<List<SubscriptionBillingHistoryInternalDto>> getMySubscriptionBillingHistories(@AuthenticationPrincipal Long userId,
+                                                                                                      @PathVariable Long subscriptionId) {
 
         List<SubscriptionBillingHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionBillingHistories(userId,subscriptionId);
 
