@@ -3,6 +3,7 @@ package com.project.subscription.business.application.subscription.service;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionBillingHistory;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
+import com.project.subscription.business.domain.subscription.entity.SubscriptionStatus;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -73,7 +74,7 @@ public class SubscriptionService {
                 .price(request.getPrice())
                 .billingCycle(request.getBillingCycle())
 
-                .status("ACTIVE")
+                .subscriptionStatus(SubscriptionStatus.ACTIVE)
                 .autoRenew(true)
                 .nextBillingDate(nextBillingDate)
                 .createdAt(now)
