@@ -37,12 +37,14 @@ public class SubscriptionController {
 
     }
 
+    // 구독 단일 조회
     // complete
-    // 구독 상세 조회
-    @GetMapping("/{id}")
-    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long id) {
+    @GetMapping("/{subscriptionId}")
+    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long subscriptionId) {
 
-        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(id);
+        Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
+
+        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(subscriptionId);
 
         // internal dto 를 response 로 포장
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
