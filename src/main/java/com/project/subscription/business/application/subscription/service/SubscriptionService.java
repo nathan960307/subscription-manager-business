@@ -45,15 +45,11 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 단일 조회
-    public SubscriptionInternalDto getSubscriptionDetail(Long subscriptionId) {
-        // 구독 ID 로 해당 서비스 상세 조회
-        Subscription subscription =subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
+    public SubscriptionInternalDto getSubscriptionDetail(Long userId, Long subscriptionId) {
 
-        // entity -> dto 변환
-        // 1. 생성자 방식
-        // 2. setter 방식
-        // 3. 빌더 방식
+        // 구독 ID 로 해당 서비스 상세 조회
+        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(subscription);
 
