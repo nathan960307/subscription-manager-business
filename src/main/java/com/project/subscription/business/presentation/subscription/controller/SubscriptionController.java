@@ -52,8 +52,8 @@ public class SubscriptionController {
         return subscriptionDetailResponse;
     }
 
-    //complete
     // 구독 생성
+    //complete
     @PostMapping
     public SubscriptionDetailResponse createSubscription(@RequestBody SubscriptionCreateRequest request) {
 

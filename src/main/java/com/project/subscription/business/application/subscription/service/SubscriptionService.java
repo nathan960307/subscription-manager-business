@@ -57,7 +57,8 @@ public class SubscriptionService {
         return subscriptionInternalDto;
     }
 
-    // 구독 서비스 추가
+    // 구독 서비스 생성
+    // complete
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
