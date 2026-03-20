@@ -44,7 +44,7 @@ public class SubscriptionController {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
 
-        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(subscriptionId);
+        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(userId,subscriptionId);
 
         // internal dto 를 response 로 포장
         SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
