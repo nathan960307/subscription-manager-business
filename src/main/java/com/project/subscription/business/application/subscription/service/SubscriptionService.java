@@ -72,6 +72,7 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 수정
+    // complete
     @Transactional
     public SubscriptionInternalDto updateSubscription(Long userId,
                                                       Long subscriptionId,

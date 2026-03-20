@@ -66,8 +66,8 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
-    // complete
     // 구독 수정
+    // complete
     @PatchMapping("/{subscriptionId}")
     public SubscriptionDetailResponse updateSubscription(@PathVariable Long subscriptionId,
                                                          @RequestBody SubscriptionUpdateRequest request) {
@@ -80,6 +80,7 @@ public class SubscriptionController {
 
         return subscriptionListResponse;
     }
+
     //complete
     // 구독 삭제
     @DeleteMapping("/{subscriptionId}")
