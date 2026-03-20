@@ -22,21 +22,8 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    // complete
-    // 구독 상세 조회
-    @GetMapping("/{id}")
-    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long id) {
-
-        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(id);
-
-        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
-
-        return subscriptionDetailResponse;
-    }
-
-    // complete
     // 내 구독 목록 조회
-    @GetMapping("/me")
+    @GetMapping
     public SubscriptionListResponse getMySubscriptions() {
 
         Long userId = 1L; // TODO: 인증 도입 후 실제 userId로 교체
@@ -48,6 +35,21 @@ public class SubscriptionController {
         return subscriptionListResponse;
 
     }
+
+    // complete
+    // 구독 상세 조회
+    @GetMapping("/{id}")
+    public SubscriptionDetailResponse getSubscriptionDetail(@PathVariable Long id) {
+
+        SubscriptionInternalDto subscription = subscriptionService.getSubscriptionDetail(id);
+
+        // internal dto 를 response 로 포장
+        SubscriptionDetailResponse subscriptionDetailResponse = SubscriptionDetailResponse.success(subscription);
+
+        return subscriptionDetailResponse;
+    }
+
+
 
     //complete
     // 구독 생성
@@ -78,6 +80,7 @@ public class SubscriptionController {
         return subscriptionListResponse;
     }
 
+    //complete
     // 구독 삭제
     @DeleteMapping("/{subscriptionId}")
     public void deleteSubscription(@PathVariable Long subscriptionId) {
