@@ -52,8 +52,6 @@ public class SubscriptionController {
         return subscriptionDetailResponse;
     }
 
-
-
     //complete
     // 구독 생성
     @PostMapping
@@ -82,7 +80,6 @@ public class SubscriptionController {
 
         return subscriptionListResponse;
     }
-
     //complete
     // 구독 삭제
     @DeleteMapping("/{subscriptionId}")

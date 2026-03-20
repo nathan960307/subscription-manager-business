@@ -57,30 +57,11 @@ public class SubscriptionService {
         return subscriptionInternalDto;
     }
 
-
-
     // 구독 서비스 추가
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextBillingDate =
-                "YEARLY".equals(request.getBillingCycle())
-                        ? now.plusYears(1)
-                        : now.plusMonths(1); // MONTHLY 기본
-        // DTO -> entity
-        Subscription subscription = Subscription.builder()
-                .userId(userId)
-                .serviceId(request.getServiceId())
-                .price(request.getPrice())
-                .billingCycle(request.getBillingCycle())
-
-                .subscriptionStatus(SubscriptionStatus.ACTIVE)
-                .autoRenew(true)
-                .nextBillingDate(nextBillingDate)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
+        Subscription subscription = Subscription.create(userId, request);
 
         Subscription saved =  subscriptionRepository.save(subscription);
 
