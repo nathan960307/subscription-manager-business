@@ -1,10 +1,11 @@
 package com.project.subscription.business.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.subscription.auth.global.exception.CustomException;
-import com.project.subscription.auth.global.exception.ErrorCode;
-import com.project.subscription.auth.infrastructure.jwt.JwtProvider;
-import com.project.subscription.auth.infrastructure.redis.RedisService;
+
+import com.project.subscription.business.global.exception.CustomException;
+import com.project.subscription.business.global.exception.ErrorCode;
+import com.project.subscription.business.infrastructure.jwt.JwtProvider;
+import com.project.subscription.business.infrastructure.redis.RedisService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
