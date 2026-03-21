@@ -29,7 +29,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     private String serviceName; // 구독 서비스 이름
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price; // 구독 가격
+    private BigDecimal price; // 구독 서비스 가격
 
     @Enumerated(EnumType.STRING)
     @Column(name = "billing_cycle", nullable = false)
@@ -54,11 +54,11 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "converted_to_paid_at")
     private LocalDateTime convertedToPaidAt; // 유료 전환 시점
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false; // 삭제 여부
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 구독 등록일
-
-    @Column(name = "deleted", nullable = false)
-    private boolean deleted = false;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt; // 수정일
