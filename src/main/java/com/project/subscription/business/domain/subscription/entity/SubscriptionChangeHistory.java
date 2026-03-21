@@ -42,4 +42,28 @@ public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 기록 생성일
+
+    // 도메인 메서드
+
+    //생성
+    public static SubscriptionChangeHistory create(
+            Long userId,
+            Long subscriptionId,
+            ChangeType changeType,
+            String oldValue,
+            String newValue,
+            ChangedBy changedBy
+    ) {
+        SubscriptionChangeHistory history = new SubscriptionChangeHistory();
+        history.userId = userId;
+        history.subscriptionId = subscriptionId;
+        history.changeType = changeType;
+        history.oldValue = oldValue;
+        history.newValue = newValue;
+        history.changedBy = changedBy;
+        history.changedAt = LocalDateTime.now();
+        history.createdAt = LocalDateTime.now();
+        return history;
+    }
+
 }
