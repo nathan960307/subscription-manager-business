@@ -26,6 +26,7 @@ public class SubscriptionService {
 
     // 구독 서비스 목록 조회
     // complete
+    @Transactional(readOnly = true)
     public List<SubscriptionInternalDto> getMySubscriptions(Long userId) {
 
         // 사용자별 구독 서비스 목록 조회
@@ -42,6 +43,7 @@ public class SubscriptionService {
 
     // 구독 서비스 단일 조회
     // complete
+    @Transactional(readOnly = true)
     public SubscriptionInternalDto getSubscriptionDetail(Long userId, Long subscriptionId) {
 
         // 구독 ID 로 해당 서비스 상세 조회
@@ -135,6 +137,7 @@ public class SubscriptionService {
 
     // 구독 서비스 변경 내역 조회
     // complete
+    @Transactional(readOnly = true)
     public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) {
 
         // 사용자,구독 별 변경 내역 조회
@@ -149,6 +152,7 @@ public class SubscriptionService {
 
     // 구독 서비스 결제 내역 조회
     // complete
+    @Transactional(readOnly = true)
     public List<SubscriptionBillingHistoryInternalDto> getMySubscriptionBillingHistories(Long userId, Long subscriptionId) {
 
         // 사용자,구독 별 결제 내역 조회
