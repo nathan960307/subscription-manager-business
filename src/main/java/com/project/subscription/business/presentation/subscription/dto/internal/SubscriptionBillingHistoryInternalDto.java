@@ -32,10 +32,4 @@ public class SubscriptionBillingHistoryInternalDto {
                 .build();
     }
 
-    // List<entity> -> List<dto>
-    public static List<SubscriptionBillingHistoryInternalDto> fromEntities(List<SubscriptionBillingHistory> billingHistories) {
-        return billingHistories.stream()
-                .map(SubscriptionBillingHistoryInternalDto::fromEntity)
-                .toList();
-    }
 }

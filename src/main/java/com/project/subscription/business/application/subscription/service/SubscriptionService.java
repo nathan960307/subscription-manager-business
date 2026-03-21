@@ -110,6 +110,7 @@ public class SubscriptionService {
 
 
     // 구독 서비스 변경 내역 조회
+    // complete
     public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) {
 
         // 사용자,구독 별 변경 내역 조회
@@ -123,13 +124,15 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 결제 내역 조회
+    // complete
     public List<SubscriptionBillingHistoryInternalDto> getMySubscriptionBillingHistories(Long userId, Long subscriptionId) {
 
         // 사용자,구독 별 결제 내역 조회
-        List<SubscriptionBillingHistory> subscriptionChangeHistories =subscriptionBillingHistoryRepository.findByUserIdAndSubscriptionIdOrderByBillingDateDesc(userId,subscriptionId);
+        List<SubscriptionBillingHistory> subscriptionBillingHistories =subscriptionBillingHistoryRepository.findByUserIdAndSubscriptionIdOrderByBillingDateDesc(userId,subscriptionId);
 
-        // entity -> dto 변환
-        List<SubscriptionBillingHistoryInternalDto> subscriptionBillingHistoryInternalDtos = SubscriptionBillingHistoryInternalDto.fromEntities(subscriptionChangeHistories);
+        List<SubscriptionBillingHistoryInternalDto> subscriptionBillingHistoryInternalDtos = subscriptionBillingHistories.stream()
+                .map(SubscriptionBillingHistoryInternalDto::fromEntity)
+                .toList();
 
         return subscriptionBillingHistoryInternalDtos;
     }
