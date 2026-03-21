@@ -76,15 +76,15 @@ public class SubscriptionController {
 
     }
 
-    // complete
     // 구독 변경 내역 조회
+    // complete
     @GetMapping("/{subscriptionId}/changes")
     public ApiResponse<List<SubscriptionChangeHistoryInternalDto>> getMySubscriptionChangeHistories(@AuthenticationPrincipal Long userId,
                                                                                                     @PathVariable Long subscriptionId) {
 
-        List<SubscriptionChangeHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionChangeHistories(userId,subscriptionId);
+        List<SubscriptionChangeHistoryInternalDto> histories = subscriptionService.getMySubscriptionChangeHistories(userId,subscriptionId);
 
-        return ApiResponse.success(subscriptions);
+        return ApiResponse.success(histories);
 
     }
 
