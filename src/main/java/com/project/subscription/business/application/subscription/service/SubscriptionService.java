@@ -3,7 +3,6 @@ package com.project.subscription.business.application.subscription.service;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionBillingHistory;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
-import com.project.subscription.business.domain.subscription.entity.SubscriptionStatus;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -117,8 +115,9 @@ public class SubscriptionService {
         // 사용자,구독 별 변경 내역 조회
         List<SubscriptionChangeHistory> subscriptionChangeHistories =subscriptionChangeHistoryRepository.findBySubscriptionIdAndUserIdOrderByChangedAtDesc(userId,subscriptionId);
 
-        // entity -> dto 변환
-        List<SubscriptionChangeHistoryInternalDto> subscriptionChangeHistoryInternalDtos = SubscriptionChangeHistoryInternalDto.fromEntities(subscriptionChangeHistories);
+        List<SubscriptionChangeHistoryInternalDto> subscriptionChangeHistoryInternalDtos = subscriptionChangeHistories.stream()
+                .map(SubscriptionChangeHistoryInternalDto::fromEntity)
+                .toList();
 
         return subscriptionChangeHistoryInternalDtos;
     }

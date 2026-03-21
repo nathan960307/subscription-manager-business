@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
@@ -35,10 +34,5 @@ public class SubscriptionChangeHistoryInternalDto {
                 .build();
     }
 
-    // List<entity> -> List<dto>
-    public static List<SubscriptionChangeHistoryInternalDto> fromEntities(List<SubscriptionChangeHistory> subscriptionChangeHistories) {
-        return subscriptionChangeHistories.stream()
-                .map(SubscriptionChangeHistoryInternalDto::fromEntity)
-                .toList();
-    }
+
 }
