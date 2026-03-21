@@ -1,9 +1,11 @@
 package com.project.subscription.business.application.subscription.service;
 
+import com.project.subscription.business.domain.external.entity.ExternalPayment;
 import com.project.subscription.business.domain.subscription.entity.*;
 import com.project.subscription.business.presentation.subscription.dto.internal.*;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
+import com.project.subscription.business.repository.external.ExternalPaymentRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
@@ -14,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository; // 구독 repository
     private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository; // 구독 변경 내역 repository
     private final SubscriptionBillingHistoryRepository subscriptionBillingHistoryRepository; // 구독 결제 내역 repository
+    private final ExternalPaymentRepository externalPaymentRepository; // 외부 결제 내역 repository
 
 
     // 구독 서비스 목록 조회
@@ -209,6 +215,69 @@ public class SubscriptionService {
         return subscriptionSummaryInternalDto;
     }
 
+    // 구독 서비스 자동 생성
+    @Transactional
+    public void autoCreateSubscription(Long userId) {
+
+        // 외부 데이터 조회 (mock)
+        List<ExternalPayment> externalPayments = externalPaymentRepository.findByUserId(userId);
+
+        // 결제 내역(entity list)을 merchant 기준으로 그룹화
+        Map<String, List<ExternalPayment>> groupedPayments =
+                externalPayments.stream()
+                        .collect(Collectors.groupingBy(ExternalPayment::getMerchantName));
+
+        // todo : 필터링 로직 적용
+        Map<String, List<ExternalPayment>> candidates = groupedPayments;
+
+        // 기존 구독 조회
+        List<Subscription> subscriptions = subscriptionRepository.findByUserIdAndDeletedFalse(userId);
+
+        // 기존 구독 이름 Set
+        Set<String> existingNames = subscriptions.stream()
+                .map(Subscription::getMerchantName)
+                .collect(Collectors.toSet());
+
+        // 비교
+        for (String serviceName : candidates.keySet()) {
+
+            // 있는 경우
+            if (existingNames.contains(serviceName)) {
+                continue;
+            }
+
+            // 없는 경우
+
+            List<ExternalPayment> payments = candidates.get(serviceName); // 외부 결제 내역 저장
+
+            ExternalPayment latest = payments.get(payments.size() - 1); // 거래 목록중 최신 거래 항목 지정
+
+            // 1. 구독 생성
+            Subscription subscription = Subscription.create(
+                    userId,
+                    serviceName,
+                    latest.getAmount(),
+                    latest.getTransactionDate()
+            );
+
+            subscriptionRepository.save(subscription);
+
+            // 2. 구독 결제 내역 연결
+            for(ExternalPayment payment  : payments) {
+
+                SubscriptionBillingHistory history = SubscriptionBillingHistory.create(
+                        userId,
+                        subscription.getId(),
+                        payment.getTransactionDate(),
+                        payment.getAmount()
+                );
+
+                subscriptionBillingHistoryRepository.save(history);
+            }
+        }
+
+
+    }
 
 
 }
