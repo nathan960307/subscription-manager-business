@@ -24,11 +24,12 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     @Column(name = "subscription_id", nullable = false)
     private Long subscriptionId; // 구독 ID (1:N, ID만 보관)
 
-    @Column(name = "billing_period_start", nullable = false)
-    private LocalDateTime billingPeriodStart; // 청구 기간 시작일
-
-    @Column(name = "billing_period_end", nullable = false)
-    private LocalDateTime billingPeriodEnd; // 청구 기간 종료일
+    //todo billing_period_start, billing_period_end 계산 로직 필요 -추후 추가 예정
+//    @Column(name = "billing_period_start", nullable = false)
+//    private LocalDateTime billingPeriodStart; // 청구 기간 시작일
+//
+//    @Column(name = "billing_period_end", nullable = false)
+//    private LocalDateTime billingPeriodEnd; // 청구 기간 종료일
 
     @Column(name = "billing_date", nullable = false)
     private LocalDateTime billingDate; // 실제 결제 시도일
@@ -36,10 +37,30 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount; // 결제 금액
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
-    // SUCCESS, FAILED, REFUNDED (enum은 나중)
+    private BillingStatus  billingStatus; // 결제 상태
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 기록 생성일
+
+    // 도메인 메서드
+
+    // 생성
+    public static SubscriptionBillingHistory create(Long userId,
+                                                    Long subscriptionId,
+                                                    LocalDateTime billingDate,
+                                                    BigDecimal amount) {
+
+        SubscriptionBillingHistory subscriptionBillingHistory = new SubscriptionBillingHistory();
+        subscriptionBillingHistory.userId = userId;
+        subscriptionBillingHistory.subscriptionId = subscriptionId;
+        //todo billing_period_start, billing_period_end 필드 추가 필요
+        subscriptionBillingHistory.billingDate = billingDate;
+        subscriptionBillingHistory.amount = amount;
+        subscriptionBillingHistory.billingStatus = BillingStatus.SUCCESS;
+        subscriptionBillingHistory.createdAt = LocalDateTime.now();
+
+        return subscriptionBillingHistory;
+    }
 }
