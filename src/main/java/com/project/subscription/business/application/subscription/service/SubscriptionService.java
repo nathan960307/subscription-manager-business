@@ -1,8 +1,6 @@
 package com.project.subscription.business.application.subscription.service;
 
-import com.project.subscription.business.domain.subscription.entity.Subscription;
-import com.project.subscription.business.domain.subscription.entity.SubscriptionBillingHistory;
-import com.project.subscription.business.domain.subscription.entity.SubscriptionChangeHistory;
+import com.project.subscription.business.domain.subscription.entity.*;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -15,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -79,14 +78,40 @@ public class SubscriptionService {
         Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
                 .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
-        // 가격 변경
-        if (request.getPrice() != null) {
+        // 변경 전 값 저장
+        BigDecimal oldPrice = subscription.getPrice();
+        BillingCycle oldCycle = subscription.getBillingCycle();
+
+        // 가격 변경 여부 검증
+        if (request.getPrice() != null && request.getPrice().compareTo(oldPrice) != 0) {
             subscription.changePrice(request.getPrice());
+
+            subscriptionChangeHistoryRepository.save(
+                    SubscriptionChangeHistory.create(
+                            userId,
+                            subscriptionId,
+                            ChangeType.PRICE,
+                            oldPrice.toString(),
+                            request.getPrice().toString(),
+                            ChangedBy.USER
+                    )
+            );
         }
 
         // 결제 주기 변경
-        if (request.getBillingCycle() != null) {
+        if (request.getBillingCycle() != null && !request.getBillingCycle().equals(oldCycle)) {
             subscription.changeBillingCycle(request.getBillingCycle());
+
+            subscriptionChangeHistoryRepository.save(
+                    SubscriptionChangeHistory.create(
+                            userId,
+                            subscriptionId,
+                            ChangeType.BILLING_CYCLE,
+                            oldCycle.name(),
+                            request.getBillingCycle().name(),
+                            ChangedBy.USER
+                    )
+            );
         }
 
         Subscription saved =  subscriptionRepository.save(subscription);
