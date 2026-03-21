@@ -88,15 +88,16 @@ public class SubscriptionController {
 
     }
 
-    // complete
+
     // 구독 결제 내역 조회
+    // complete
     @GetMapping("/{subscriptionId}/billings")
     public ApiResponse<List<SubscriptionBillingHistoryInternalDto>> getMySubscriptionBillingHistories(@AuthenticationPrincipal Long userId,
                                                                                                       @PathVariable Long subscriptionId) {
 
-        List<SubscriptionBillingHistoryInternalDto> subscriptions = subscriptionService.getMySubscriptionBillingHistories(userId,subscriptionId);
+        List<SubscriptionBillingHistoryInternalDto> histories = subscriptionService.getMySubscriptionBillingHistories(userId,subscriptionId);
 
-        return ApiResponse.success(subscriptions);
+        return ApiResponse.success(histories);
 
     }
 
