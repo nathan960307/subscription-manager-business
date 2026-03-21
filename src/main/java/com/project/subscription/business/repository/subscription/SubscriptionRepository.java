@@ -19,4 +19,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription,Long>
 
     // 유저ID 와 구독ID 로 해당 구독 조회
     Optional<Subscription> findByIdAndUserIdAndDeletedFalse(Long userId, Long subscriptionId);
+
+    // 삭제되지 않은 구독 목록 조회
+    List<Subscription> findByUserIdAndDeletedFalse(Long userId);
 }
