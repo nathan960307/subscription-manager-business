@@ -111,6 +111,8 @@ public class SubscriptionController {
         return ApiResponse.success(subscriptionSummary);
     }
 
+    // 구독 자동 생성
+
 
 
 
