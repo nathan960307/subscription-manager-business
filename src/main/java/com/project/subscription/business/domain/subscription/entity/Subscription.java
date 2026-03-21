@@ -82,10 +82,9 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
         subscription.userId = userId;
         subscription.serviceId = request.getServiceId();
-        // todo 서비스 명 입력 받기
+        subscription.serviceName = request.getServiceName();
         subscription.price = request.getPrice();
         subscription.billingCycle = request.getBillingCycle();
-
         subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
         subscription.autoRenew = true;
 
