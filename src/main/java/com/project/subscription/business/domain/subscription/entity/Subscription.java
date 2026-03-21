@@ -26,7 +26,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     private Long serviceId; // 구독 서비스 ID
 
     @Column(name = "merchant_name", nullable = false)
-    private String merchantName;
+    private String serviceName; // 구독 서비스 이름
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price; // 구독 가격
