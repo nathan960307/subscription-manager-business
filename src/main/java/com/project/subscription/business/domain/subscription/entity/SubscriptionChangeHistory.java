@@ -23,9 +23,9 @@ public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상
     @Column(name = "subscription_id", nullable = false)
     private Long subscriptionId; // 구독 ID
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "change_type", nullable = false, length = 20)
-    private String changeType;
-    // STATUS, PRICE, PLAN (enum 추후 추가 예정)
+    private ChangeType changeType;
 
     @Column(name = "old_value", length = 255)
     private String oldValue; // 변경 전 값
