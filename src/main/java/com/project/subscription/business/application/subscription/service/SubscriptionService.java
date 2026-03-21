@@ -1,9 +1,7 @@
 package com.project.subscription.business.application.subscription.service;
 
 import com.project.subscription.business.domain.subscription.entity.*;
-import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
-import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
-import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.internal.*;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -160,6 +159,50 @@ public class SubscriptionService {
                 .toList();
 
         return subscriptionBillingHistoryInternalDtos;
+    }
+
+    // 구독 서비스 요약 통계 조회
+    // complete
+    @Transactional(readOnly = true)
+    public SubscriptionSummaryInternalDto getSubscriptionSummary(Long userId) {
+
+        // 구독 목록 조회
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUserIdAndDeletedFalse(userId);
+
+        // 구독 서비스 수 조회
+        int totalCount = subscriptions.size();
+
+        // 예상 결제 내역 조회
+        LocalDate now =  LocalDate.now();
+
+        BigDecimal totalAmount = subscriptions.stream()
+                // nextBillingDate가 이번 달인 것만 필터
+                .filter(s -> {
+                    LocalDate billingDate = s.getNextBillingDate().toLocalDate();
+                    return billingDate.getYear() == now.getYear() && billingDate.getMonth() == now.getMonth();
+                })
+                // 가격만 추출
+                .map(Subscription::getPrice)
+                // 전부 더하기
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+        // monthlyBillingitems 생성
+        List<MonthlyBillingItemDto> monthlyBillingItems = subscriptions.stream()
+                .filter(s -> {
+                    LocalDate billingDate = s.getNextBillingDate().toLocalDate();
+                    return billingDate.getYear() == now.getYear() && billingDate.getMonth() == now.getMonth();
+                })
+                .map(MonthlyBillingItemDto::fromEntity)
+                .toList();
+
+        SubscriptionSummaryInternalDto subscriptionSummaryInternalDto = SubscriptionSummaryInternalDto.builder()
+                .totalCount(totalCount)
+                .totalAmount(totalAmount)
+                .monthlyBillingItems(monthlyBillingItems)
+                .build();
+
+        return subscriptionSummaryInternalDto;
     }
 
 
