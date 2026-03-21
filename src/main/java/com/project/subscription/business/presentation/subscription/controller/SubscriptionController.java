@@ -5,6 +5,7 @@ import com.project.subscription.business.global.response.ApiResponse;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionBillingHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionChangeHistoryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionSummaryInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -98,6 +99,16 @@ public class SubscriptionController {
 
         return ApiResponse.success(histories);
 
+    }
+
+    // 구독 요약 통계 조회
+    // complete
+    @GetMapping("/summary")
+    public ApiResponse<SubscriptionSummaryInternalDto> getSubscriptionSummary(@AuthenticationPrincipal Long userId) {
+
+        SubscriptionSummaryInternalDto subscriptionSummary = subscriptionService.getSubscriptionSummary(userId);
+
+        return ApiResponse.success(subscriptionSummary);
     }
 
 
