@@ -25,6 +25,9 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "service_id", nullable = false)
     private Long serviceId; // 구독 서비스 ID
 
+    @Column(name = "merchant_name", nullable = false)
+    private String merchantName;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price; // 구독 가격
 
@@ -70,7 +73,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     /// 도메인 메서드
     ///
 
-    // 구독 생성
+    // 구독 생성(수동)
     public static Subscription create(Long userId, SubscriptionCreateRequest request) {
 
         LocalDateTime now = LocalDateTime.now();
@@ -79,6 +82,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
         subscription.userId = userId;
         subscription.serviceId = request.getServiceId();
+        // todo 서비스 명 입력 받기
         subscription.price = request.getPrice();
         subscription.billingCycle = request.getBillingCycle();
 
@@ -94,6 +98,37 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         subscription.updatedAt = now;
 
         return subscription;
+    }
+
+    // 구독 생성(자동)
+    public static Subscription create(Long userId,
+                                      String merchantName,
+                                      BigDecimal price,
+                                      LocalDateTime lastPaymentDate) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Subscription subscription = new Subscription();
+
+        subscription.userId = userId;
+        subscription.serviceId = 0L; // todo
+        subscription.merchantName = merchantName;
+        subscription.price = price;
+
+        // 기본값 (일단 단순하게)
+        subscription.billingCycle = BillingCycle.MONTHLY;
+
+        subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
+        subscription.autoRenew = true;
+
+        // 다음 결제일 (임시: 한달 뒤)
+        subscription.nextBillingDate = lastPaymentDate.plusMonths(1);
+
+        subscription.createdAt = now;
+        subscription.updatedAt = now;
+
+        return subscription;
+
     }
 
 
