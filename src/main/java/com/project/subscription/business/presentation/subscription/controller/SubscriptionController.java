@@ -88,7 +88,6 @@ public class SubscriptionController {
 
     }
 
-
     // 구독 결제 내역 조회
     // complete
     @GetMapping("/{subscriptionId}/billings")

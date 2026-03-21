@@ -1,0 +1,3 @@
+### 구독 결제(계좌) 내역 조회
+GET http://localhost:8080/api/v1/subscriptions/1/billings
+Content-Type: application/json

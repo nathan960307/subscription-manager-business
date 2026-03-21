@@ -1,6 +1,5 @@
 package com.project.subscription.business.presentation.subscription.dto.internal;
 
-import com.project.subscription.business.application.subscription.service.SubscriptionService;
 import com.project.subscription.business.domain.subscription.entity.BillingCycle;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionStatus;
@@ -9,7 +8,6 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
