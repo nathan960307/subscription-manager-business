@@ -1,5 +1,6 @@
 package com.project.subscription.business.presentation.subscription.dto.internal;
 
+import com.project.subscription.business.domain.subscription.entity.BillingStatus;
 import com.project.subscription.business.domain.subscription.entity.SubscriptionBillingHistory;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,17 +18,17 @@ public class SubscriptionBillingHistoryInternalDto {
     private LocalDateTime billingPeriodEnd;
 
     private BigDecimal amount;
-    private String status;
+    private BillingStatus billingHistory;
 
     // entity -> dto
     public static SubscriptionBillingHistoryInternalDto fromEntity(SubscriptionBillingHistory billingHistory) {
         return SubscriptionBillingHistoryInternalDto.builder()
                 .billingHistoryId(billingHistory.getId())
                 .billingDate(billingHistory.getBillingDate())
-                .billingPeriodStart(billingHistory.getBillingPeriodStart())
-                .billingPeriodEnd(billingHistory.getBillingPeriodEnd())
+//                .billingPeriodStart(billingHistory.getBillingPeriodStart())
+//                .billingPeriodEnd(billingHistory.getBillingPeriodEnd())
                 .amount(billingHistory.getAmount())
-                .status(billingHistory.getStatus())
+                .billingHistory(billingHistory.getBillingStatus())
                 .build();
     }
 
