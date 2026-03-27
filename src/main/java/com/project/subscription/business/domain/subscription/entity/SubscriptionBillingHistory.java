@@ -24,13 +24,6 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     @Column(name = "subscription_id", nullable = false)
     private Long subscriptionId; // 구독 ID (1:N, ID만 보관)
 
-    //todo billing_period_start, billing_period_end 계산 로직 필요 -추후 추가 예정
-//    @Column(name = "billing_period_start", nullable = false)
-//    private LocalDateTime billingPeriodStart; // 청구 기간 시작일
-//
-//    @Column(name = "billing_period_end", nullable = false)
-//    private LocalDateTime billingPeriodEnd; // 청구 기간 종료일
-
     @Column(name = "billing_date", nullable = false)
     private LocalDateTime billingDate; // 실제 결제 시도일
 
