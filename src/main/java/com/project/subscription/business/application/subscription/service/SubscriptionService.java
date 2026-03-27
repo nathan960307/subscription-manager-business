@@ -66,6 +66,8 @@ public class SubscriptionService {
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
+        // 서비스 명 정규화
+
         Subscription subscription = Subscription.create(
                 userId,
                 request.getServiceName(),
@@ -284,6 +286,18 @@ public class SubscriptionService {
         }
 
 
+    }
+
+
+    /// 공통 ///
+
+    // 서비스 이름 정규화
+    private String normalizeServiceName(String serviceName) {
+        String normal = serviceName
+                .trim()
+                .toLowerCase()
+                .replaceAll("[^a-zA-Z0-9]", "");
+        return normal;
     }
 
 
