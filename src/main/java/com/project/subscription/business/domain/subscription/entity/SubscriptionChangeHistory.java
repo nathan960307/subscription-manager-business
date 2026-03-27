@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "subscription_change_history")
+@Table(name = "subscription_change_histories")
 public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상태/속성 변경 이력을 남기는 엔티티
 
     @Id
