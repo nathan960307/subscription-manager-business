@@ -45,7 +45,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "subscription_status",nullable = false)
     private SubscriptionStatus subscriptionStatus; // 구독 상태
 
-    @Column(name = "deleted", nullable = false)
+    @Column(name = "id_deleted", nullable = false)
     private boolean deleted = false; // 삭제 여부
 
     @Column(name = "created_at", nullable = false)
