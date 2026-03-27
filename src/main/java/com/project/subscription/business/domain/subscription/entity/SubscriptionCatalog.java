@@ -29,5 +29,21 @@ public class SubscriptionCatalog {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 생성일
 
+    ///  도메인 메서드 ///
+
+    // 생성
+    public static SubscriptionCatalog create(
+            String companyName,
+            String serviceName,
+            String normalizedName
+    ) {
+        SubscriptionCatalog catalog = new SubscriptionCatalog();
+        catalog.companyName = companyName;
+        catalog.serviceName = serviceName;
+        catalog.normalizedName = normalizedName;
+        catalog.createdAt = LocalDateTime.now();
+        return catalog;
+    }
+
 
 }
