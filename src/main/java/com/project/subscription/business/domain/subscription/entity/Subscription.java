@@ -45,18 +45,6 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "subscription_status",nullable = false)
     private SubscriptionStatus subscriptionStatus; // 구독 상태
 
-    @Column(name = "auto_renew", nullable = false)
-    private boolean autoRenew = true; // 자동 갱신 여부
-
-    @Column(name = "trial_end_date")
-    private LocalDateTime trialEndDate; // 무료 체험 종료일
-
-    @Column(name = "first_paid_at")
-    private LocalDateTime firstPaidAt; // 첫 유료 결제
-
-    @Column(name = "converted_to_paid_at")
-    private LocalDateTime convertedToPaidAt; // 유료 전환 시점
-
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false; // 삭제 여부
 
@@ -89,7 +77,6 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         subscription.price = request.getPrice();
         subscription.billingCycle = request.getBillingCycle();
         subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
-        subscription.autoRenew = true;
 
         subscription.nextBillingDate =
                 request.getBillingCycle() == BillingCycle.YEARLY
@@ -121,7 +108,6 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         subscription.billingCycle = BillingCycle.MONTHLY;
 
         subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
-        subscription.autoRenew = true;
 
         // 다음 결제일 (임시: 한달 뒤)
         subscription.nextBillingDate = lastPaymentDate.plusMonths(1);
