@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "subscription_billing_history")
+@Table(name = "subscription_billing_histories")
 public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : 구독에 대한 결제 이력을 기록하는 테이블
 
     @Id
