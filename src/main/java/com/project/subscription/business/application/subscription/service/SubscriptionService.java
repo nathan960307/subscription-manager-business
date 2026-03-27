@@ -292,7 +292,7 @@ public class SubscriptionService {
                 .collect(Collectors.toSet());
 
         // 비교
-        for (String serviceName : candidates.keySet()) {
+        for (String serviceName : normalizedCandidates.keySet()) {
 
             // 있는 경우
             if (existingNames.contains(serviceName)) {
@@ -301,13 +301,13 @@ public class SubscriptionService {
 
             // 없는 경우
 
-            List<ExternalPayment> payments = candidates.get(serviceName); // 외부 결제 내역 저장
+            List<ExternalPayment> payments = normalizedCandidates.get(serviceName); // 외부 결제 내역 저장
 
             payments.sort(Comparator.comparing(ExternalPayment::getTransactionDate)); // 오름차순
 
             ExternalPayment latest = payments.get(payments.size() - 1); // 거래 목록중 최신 거래 항목 지정
 
-            // 구독 id 조회
+            // 구독 서비스 id 조회
             Optional<SubscriptionCatalog> catalogOpt = subscriptionCatalogRepository.
                     findByNormalizedName(serviceName);
 
@@ -356,6 +356,17 @@ public class SubscriptionService {
             }
 
             // 3. 구독 변경 내역 연결
+            SubscriptionChangeHistory history =
+                    SubscriptionChangeHistory.create(
+                            userId, // 사용자 id
+                            subscription.getId(), // 구독 id
+                            ChangeType.CREATE,
+                            null, // 생성이니까 이전값 없음
+                            subscription.getServiceName(), // 또는 전체 JSON도 가능
+                            ChangedBy.SYSTEM
+                    );
+
+            subscriptionChangeHistoryRepository.save(history);
         }
 
 
