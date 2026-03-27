@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -325,6 +326,20 @@ public class SubscriptionService {
 
             // 결제 주기 계산
             // todo
+            long cycle = ChronoUnit.DAYS.between(
+                    payments.get(payments.size() - 2).getTransactionDate(),
+                    payments.get(payments.size() - 1).getTransactionDate()
+            );
+
+            BillingCycle billingCycle;
+
+            if (cycle >= 28 && cycle <= 31) {
+                billingCycle = BillingCycle.MONTHLY;
+            } else if (cycle >= 360 && cycle <= 370) {
+                billingCycle = BillingCycle.YEARLY;
+            } else {
+                billingCycle = BillingCycle.MONTHLY; // 기본값
+            }
 
             // 1. 구독 생성
             Subscription subscription = Subscription.create(
@@ -332,8 +347,7 @@ public class SubscriptionService {
                     serviceId,
                     serviceName,
                     latest.getAmount(),
-                    // 주기 추가
-                    null,
+                    billingCycle,
                     latest.getTransactionDate()
             );
 
