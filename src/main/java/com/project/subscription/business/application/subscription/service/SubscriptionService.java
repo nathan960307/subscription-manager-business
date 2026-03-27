@@ -303,14 +303,37 @@ public class SubscriptionService {
 
             List<ExternalPayment> payments = candidates.get(serviceName); // 외부 결제 내역 저장
 
+            payments.sort(Comparator.comparing(ExternalPayment::getTransactionDate)); // 오름차순
+
             ExternalPayment latest = payments.get(payments.size() - 1); // 거래 목록중 최신 거래 항목 지정
+
+            // 구독 id 조회
+            Optional<SubscriptionCatalog> catalogOpt = subscriptionCatalogRepository.
+                    findByNormalizedName(serviceName);
+
+            SubscriptionCatalog catalog;
+
+            if(catalogOpt.isPresent()) { // 조회 결과가 존재 하는 경우
+                catalog = catalogOpt.get();
+            }else { // 조회 결과가 존재 하지 않는 경우
+                catalog = SubscriptionCatalog.create(serviceName, serviceName, serviceName); // id 없음
+                catalog = subscriptionCatalogRepository.save(catalog); // id 생성됨
+            }
+
+            // 서비스 id 저장
+            Long serviceId = catalog.getId();
+
+            // 결제 주기 계산
+            // todo
 
             // 1. 구독 생성
             Subscription subscription = Subscription.create(
                     userId,
+                    serviceId,
                     serviceName,
                     latest.getAmount(),
-                    serviceId,
+                    // 주기 추가
+                    null,
                     latest.getTransactionDate()
             );
 
@@ -319,15 +342,20 @@ public class SubscriptionService {
             // 2. 구독 결제 내역 연결
             for(ExternalPayment payment  : payments) {
 
+                BillingStatus status = convertStatus(payment.getTransactionType()); // 결제 타입 변환
                 SubscriptionBillingHistory history = SubscriptionBillingHistory.create(
                         userId,
                         subscription.getId(),
+                        payment.getTransactionId(),
                         payment.getTransactionDate(),
+                        status,
                         payment.getAmount()
                 );
 
                 subscriptionBillingHistoryRepository.save(history);
             }
+
+            // 3. 구독 변경 내역 연결
         }
 
 
@@ -356,6 +384,16 @@ public class SubscriptionService {
         String mapped = ALIAS_MAP.getOrDefault(normal, normal);
 
         return mapped;
+    }
+
+    // 결제 타입 변환
+    private BillingStatus convertStatus(String status) {
+        return switch (status) {
+            case "SUCCESS", "APPROVED", "PAID" -> BillingStatus.SUCCESS;
+            case "FAILED", "DECLINED" -> BillingStatus.FAILED;
+            case "REFUNDED", "CANCELED", "VOID" -> BillingStatus.REFUNDED;
+            default -> BillingStatus.UNKNOWN;
+        };
     }
 
 
