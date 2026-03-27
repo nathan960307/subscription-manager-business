@@ -260,6 +260,7 @@ public class SubscriptionService {
     }
 
     // 구독 서비스 자동 생성
+    // complete
     @Transactional
     public void autoCreateSubscription(Long userId) {
 
@@ -272,7 +273,45 @@ public class SubscriptionService {
                         .collect(Collectors.groupingBy(ExternalPayment::getMerchantName));
 
         // todo : 필터링 로직 적용
-        Map<String, List<ExternalPayment>> candidates = groupedPayments;
+        Map<String, List<ExternalPayment>> candidates = groupedPayments.entrySet().stream()
+                .filter(entry -> entry.getValue().size() >=2) // 결제 내역이 2회 이상인지 확인
+                .peek(entry -> entry.getValue().sort(Comparator.comparing(ExternalPayment::getCreatedAt))) // 오름차순 정렬
+                .filter(entry -> {
+                    List<ExternalPayment> payments = entry.getValue();
+
+                    long prev = ChronoUnit.DAYS.between(
+                            payments.get(0).getTransactionDate().toLocalDate(),
+                            payments.get(1).getTransactionDate().toLocalDate()
+                    );
+
+                    for(int i=2; i<payments.size(); i++){
+                        long current = ChronoUnit.DAYS.between(
+                                payments.get(i-1).getTransactionDate(),
+                                payments.get(i).getTransactionDate()
+                        );
+
+                        if(Math.abs(current-prev) > 5){
+                            return false;
+                        }
+                    }
+
+                    return true;
+
+                }) // 결제 날짜 간격 계산
+                .filter(entry -> {
+                    List<ExternalPayment> payments = entry.getValue();
+
+                    double avg = payments.stream()
+                            .mapToDouble(p -> p.getAmount().doubleValue())
+                            .average()
+                            .orElse(0);
+
+                    return payments.stream()
+                            .allMatch(p ->
+                                    Math.abs(p.getAmount().doubleValue() - avg) / avg <= 0.1
+                            );
+                }) // 결제 금액이 일정 수준 유사한지 검사
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // 정규화
         Map<String, List<ExternalPayment>> normalizedCandidates = new HashMap<>();
@@ -325,7 +364,6 @@ public class SubscriptionService {
             Long serviceId = catalog.getId();
 
             // 결제 주기 계산
-            // todo
             long cycle = ChronoUnit.DAYS.between(
                     payments.get(payments.size() - 2).getTransactionDate(),
                     payments.get(payments.size() - 1).getTransactionDate()
@@ -382,8 +420,6 @@ public class SubscriptionService {
 
             subscriptionChangeHistoryRepository.save(history);
         }
-
-
     }
 
 
