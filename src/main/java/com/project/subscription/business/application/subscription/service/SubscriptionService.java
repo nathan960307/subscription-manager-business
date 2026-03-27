@@ -291,14 +291,29 @@ public class SubscriptionService {
 
     /// 공통 ///
 
+    // 대표 서비스명 매핑
+    private static final Map<String, String> ALIAS_MAP = Map.of(
+            "NETFLIX", "NETFLIX",
+            "NETFLIXCOM", "NETFLIX",
+            "넷플릭스", "NETFLIX"
+    );
+
     // 서비스 이름 정규화
     private String normalizeServiceName(String serviceName) {
+
+        // 이름 정규화
         String normal = serviceName
                 .trim()
                 .toUpperCase()
                 .replaceAll("[^A-Z0-9가-힣]", "");
-        return normal;
+
+        // 이름 매핑
+        String mapped = ALIAS_MAP.getOrDefault(normal, normal);
+
+        return mapped;
     }
+
+
 
 
 }
