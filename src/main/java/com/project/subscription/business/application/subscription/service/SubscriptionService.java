@@ -93,8 +93,8 @@ public class SubscriptionService {
         // 구독 정보 생성
         Subscription subscription = Subscription.create(
                 userId,
-                serviceId,
-                request.getServiceName(),
+                serviceId, // 서비스 id
+                catalog.getServiceName(),
                 request.getPrice(),
                 request.getBillingCycle(),
                 request.getStartDate()
