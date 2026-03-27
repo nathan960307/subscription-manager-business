@@ -100,9 +100,23 @@ public class SubscriptionService {
                 request.getStartDate()
                 );
 
+        // 구독 저장
         Subscription saved =  subscriptionRepository.save(subscription);
 
         SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(saved);
+
+        // 구독 생성 이력 생성 및 저장
+        SubscriptionChangeHistory history =
+                SubscriptionChangeHistory.create(
+                        userId, // 사용자 id
+                        saved.getId(), // 구독 id
+                        ChangeType.CREATE,
+                        null, // 생성이니까 이전값 없음
+                        saved.getServiceName(), // 또는 전체 JSON도 가능
+                        ChangedBy.SYSTEM
+                );
+
+        subscriptionChangeHistoryRepository.save(history);
 
         return subscriptionInternalDto;
     }
