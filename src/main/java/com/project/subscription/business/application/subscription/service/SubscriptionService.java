@@ -295,8 +295,8 @@ public class SubscriptionService {
     private String normalizeServiceName(String serviceName) {
         String normal = serviceName
                 .trim()
-                .toLowerCase()
-                .replaceAll("[^a-zA-Z0-9]", "");
+                .toUpperCase()
+                .replaceAll("[^A-Z0-9가-힣]", "");
         return normal;
     }
 
