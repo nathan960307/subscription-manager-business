@@ -47,6 +47,9 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "id_deleted", nullable = false)
     private boolean deleted = false; // 삭제 여부
 
+    @Column(name = "start_date")
+    private LocalDateTime startDate; // 구독 시작일
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 구독 등록일
 
@@ -64,14 +67,19 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     ///
 
     // 구독 생성(수동)
-    public static Subscription create(Long userId, SubscriptionCreateRequest request) {
+    public static Subscription create(
+            Long userId,
+            String serviceName,
+            BigDecimal price,
+            BillingCycle billingCycle,
+            LocalDateTime startDate
+            ) {
 
         LocalDateTime now = LocalDateTime.now();
 
         Subscription subscription = new Subscription();
 
         subscription.userId = userId;
-        subscription.serviceId = request.getServiceId();
         subscription.serviceName = request.getServiceName();
         subscription.price = request.getPrice();
         subscription.billingCycle = request.getBillingCycle();

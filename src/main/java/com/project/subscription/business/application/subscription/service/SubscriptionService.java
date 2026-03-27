@@ -66,7 +66,13 @@ public class SubscriptionService {
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
-        Subscription subscription = Subscription.create(userId, request);
+        Subscription subscription = Subscription.create(
+                userId,
+                request.getServiceName(),
+                request.getPrice(),
+                request.getBillingCycle(),
+                request.getStartDate()
+                );
 
         Subscription saved =  subscriptionRepository.save(subscription);
 
@@ -235,7 +241,7 @@ public class SubscriptionService {
 
         // 기존 구독 이름 Set
         Set<String> existingNames = subscriptions.stream()
-                .map(Subscription::getMerchantName)
+                .map(Subscription::getServiceName)
                 .collect(Collectors.toSet());
 
         // 비교
@@ -257,6 +263,7 @@ public class SubscriptionService {
                     userId,
                     serviceName,
                     latest.getAmount(),
+                    serviceId,
                     latest.getTransactionDate()
             );
 
