@@ -25,7 +25,7 @@ public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상
 
     @Enumerated(EnumType.STRING)
     @Column(name = "change_type", nullable = false, length = 20)
-    private ChangeType changeType;
+    private ChangeType changeType; // 변경 유형
 
     @Column(name = "old_value", length = 255)
     private String oldValue; // 변경 전 값
@@ -38,7 +38,7 @@ public class SubscriptionChangeHistory { // 구독 변경 이력 : 구독의 상
 
     @Enumerated(EnumType.STRING)
     @Column(name = "changed_by", nullable = false, length = 50)
-    private ChangedBy changedBy; // SYSTEM, USER, ADMIN
+    private ChangedBy changedBy; // 변경 주체
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 기록 생성일
