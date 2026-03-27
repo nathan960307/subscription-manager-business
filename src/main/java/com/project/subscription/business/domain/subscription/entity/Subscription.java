@@ -1,5 +1,6 @@
 package com.project.subscription.business.domain.subscription.entity;
 
+import com.project.subscription.business.domain.servicecatalog.ServiceCatalog;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Builder
-@Table(name = "subscription")
+@Table(name = "subscriptions")
 public class Subscription { // 사용자의 현재 구독 상태를 나타내는 테이블
 
     @Id
@@ -25,7 +26,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "service_id", nullable = false)
     private Long serviceId; // 구독 서비스 ID
 
-    @Column(name = "merchant_name", nullable = false)
+    @Column(name = "service_name", nullable = false)
     private String serviceName; // 구독 서비스 이름
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -37,6 +38,8 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     @Column(name = "next_billing_date", nullable = false)
     private LocalDateTime nextBillingDate; // 다음 결제일
+    //todo : 조회 시 nextBillingDate가 현재보다 과거인 경우,
+    // billingCycle 기분으로 미래 시점까지 보정 필요
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subscription_status",nullable = false)
@@ -101,7 +104,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
 
     // 구독 생성(자동)
     public static Subscription create(Long userId,
-                                      String merchantName,
+                                      String serviceName,
                                       BigDecimal price,
                                       LocalDateTime lastPaymentDate) {
 
@@ -110,8 +113,8 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         Subscription subscription = new Subscription();
 
         subscription.userId = userId;
-        subscription.serviceId = 0L; // todo
-        subscription.merchantName = merchantName;
+        subscription.serviceId = ServiceCatalog.valueOf(serviceName.toUpperCase()).getServiceId();
+        subscription.serviceName = serviceName;
         subscription.price = price;
 
         // 기본값 (일단 단순하게)
