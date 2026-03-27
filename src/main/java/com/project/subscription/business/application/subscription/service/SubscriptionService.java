@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,7 +62,7 @@ public class SubscriptionService {
         return subscriptionInternalDto;
     }
 
-    // 구독 서비스 생성
+    // 구독 서비스 생성(수동)
     // complete
     @Transactional
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
@@ -275,6 +272,16 @@ public class SubscriptionService {
 
         // todo : 필터링 로직 적용
         Map<String, List<ExternalPayment>> candidates = groupedPayments;
+
+        // 정규화
+        Map<String, List<ExternalPayment>> normalizedCandidates = new HashMap<>();
+
+        for (Map.Entry<String, List<ExternalPayment>> entry : candidates.entrySet()) {
+            normalizedCandidates.put(
+                    normalizeServiceName(entry.getKey()),
+                    entry.getValue()
+            );
+        }
 
         // 기존 구독 조회
         List<Subscription> subscriptions = subscriptionRepository.findByUserIdAndDeletedFalse(userId);
