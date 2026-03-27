@@ -24,6 +24,9 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     @Column(name = "subscription_id", nullable = false)
     private Long subscriptionId; // 구독 ID (1:N, ID만 보관)
 
+    @Column(name = "transaction_id", nullable = false, unique = true)
+    private String transactionId; // 외부 결제 고유 ID
+
     @Column(name = "billing_date", nullable = false)
     private LocalDateTime billingDate; // 실제 결제 시도일
 
