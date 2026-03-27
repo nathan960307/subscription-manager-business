@@ -262,7 +262,10 @@ public class SubscriptionService {
     // 구독 서비스 자동 생성
     // complete
     @Transactional
-    public void autoCreateSubscription(Long userId) {
+    public List<SubscriptionInternalDto> autoCreateSubscription(Long userId) {
+
+        // 결과 리스트
+        List<SubscriptionInternalDto> result = new ArrayList<>();
 
         // 외부 데이터 조회 (mock)
         List<ExternalPayment> externalPayments = externalPaymentRepository.findByUserId(userId);
@@ -272,7 +275,7 @@ public class SubscriptionService {
                 externalPayments.stream()
                         .collect(Collectors.groupingBy(ExternalPayment::getMerchantName));
 
-        // todo : 필터링 로직 적용
+        // 필터링 로직 적용
         Map<String, List<ExternalPayment>> candidates = groupedPayments.entrySet().stream()
                 .filter(entry -> entry.getValue().size() >=2) // 결제 내역이 2회 이상인지 확인
                 .peek(entry -> entry.getValue().sort(Comparator.comparing(ExternalPayment::getCreatedAt))) // 오름차순 정렬
@@ -389,7 +392,9 @@ public class SubscriptionService {
                     latest.getTransactionDate()
             );
 
-            subscriptionRepository.save(subscription);
+            Subscription saved = subscriptionRepository.save(subscription);
+
+            result.add(SubscriptionInternalDto.fromEntity(saved));
 
             // 2. 구독 결제 내역 연결
             for(ExternalPayment payment  : payments) {
@@ -397,7 +402,7 @@ public class SubscriptionService {
                 BillingStatus status = convertStatus(payment.getTransactionType()); // 결제 타입 변환
                 SubscriptionBillingHistory history = SubscriptionBillingHistory.create(
                         userId,
-                        subscription.getId(),
+                        saved.getId(),
                         payment.getTransactionId(),
                         payment.getTransactionDate(),
                         status,
@@ -411,7 +416,7 @@ public class SubscriptionService {
             SubscriptionChangeHistory history =
                     SubscriptionChangeHistory.create(
                             userId, // 사용자 id
-                            subscription.getId(), // 구독 id
+                            saved.getId(), // 구독 id
                             ChangeType.CREATE,
                             null, // 생성이니까 이전값 없음
                             subscription.getServiceName(), // 또는 전체 JSON도 가능
@@ -420,6 +425,8 @@ public class SubscriptionService {
 
             subscriptionChangeHistoryRepository.save(history);
         }
+
+        return result;
     }
 
 
