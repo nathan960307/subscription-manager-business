@@ -52,13 +52,13 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     private LocalDateTime createdAt; // 구독 등록일
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt; // 수정일
+    private LocalDateTime updatedAt; // 구독 수정일
 
     @Column(name = "canceled_at")
     private LocalDateTime canceledAt; // 구독 취소일
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt; // 삭제일
+    private LocalDateTime deletedAt; // 구독 삭제일
 
     ///
     /// 도메인 메서드
