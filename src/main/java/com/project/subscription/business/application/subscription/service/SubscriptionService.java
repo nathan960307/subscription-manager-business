@@ -7,6 +7,7 @@ import com.project.subscription.business.presentation.subscription.dto.request.S
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import com.project.subscription.business.repository.external.ExternalPaymentRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
+import com.project.subscription.business.repository.subscription.SubscriptionCatalogRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ public class SubscriptionService {
     private final SubscriptionChangeHistoryRepository subscriptionChangeHistoryRepository; // 구독 변경 내역 repository
     private final SubscriptionBillingHistoryRepository subscriptionBillingHistoryRepository; // 구독 결제 내역 repository
     private final ExternalPaymentRepository externalPaymentRepository; // 외부 결제 내역 repository
+    private final SubscriptionCatalogRepository subscriptionCatalogRepository; // 구독 카탈로그 repository
 
 
     // 구독 서비스 목록 조회
@@ -67,9 +71,29 @@ public class SubscriptionService {
     public SubscriptionInternalDto createSubscription(Long userId, SubscriptionCreateRequest request) {
 
         // 서비스 명 정규화
+        String normalized = normalizeServiceName(request.getServiceName());
 
+        // 정규화된 이름으로 serviceID 조회
+
+        Optional<SubscriptionCatalog> catalogOpt = subscriptionCatalogRepository.
+                findByNormalizedName(normalized);
+
+        SubscriptionCatalog catalog;
+
+        if(catalogOpt.isPresent()) { // 조회 결과가 존재 하는 경우
+            catalog = catalogOpt.get();
+        }else { // 조회 결과가 존재 하지 않는 경우
+            catalog = SubscriptionCatalog.create(normalized, normalized, normalized); // id 없음
+            catalog = subscriptionCatalogRepository.save(catalog); // id 생성됨
+        }
+
+        // 서비스 id 저장
+        Long serviceId = catalog.getId();
+
+        // 구독 정보 생성
         Subscription subscription = Subscription.create(
                 userId,
+                serviceId,
                 request.getServiceName(),
                 request.getPrice(),
                 request.getBillingCycle(),
