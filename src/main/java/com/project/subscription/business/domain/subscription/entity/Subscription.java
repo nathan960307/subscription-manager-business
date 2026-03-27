@@ -69,6 +69,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     // 구독 생성(수동)
     public static Subscription create(
             Long userId,
+            Long serviceId,
             String serviceName,
             BigDecimal price,
             BillingCycle billingCycle,
@@ -76,34 +77,7 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
             ) {
 
         LocalDateTime now = LocalDateTime.now();
-
-        Subscription subscription = new Subscription();
-
-        subscription.userId = userId;
-        subscription.serviceName = request.getServiceName();
-        subscription.price = request.getPrice();
-        subscription.billingCycle = request.getBillingCycle();
-        subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
-
-        subscription.nextBillingDate =
-                request.getBillingCycle() == BillingCycle.YEARLY
-                        ? now.plusYears(1)
-                        : now.plusMonths(1);
-
-        subscription.createdAt = now;
-        subscription.updatedAt = now;
-
-        return subscription;
-    }
-
-    // 구독 생성(자동)
-    public static Subscription create(Long userId,
-                                      String serviceName,
-                                      BigDecimal price,
-                                      Long serviceId,
-                                      LocalDateTime lastPaymentDate) {
-
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime baseDate = startDate == null ? now : startDate;
 
         Subscription subscription = new Subscription();
 
@@ -111,20 +85,18 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
         subscription.serviceId = serviceId;
         subscription.serviceName = serviceName;
         subscription.price = price;
+        subscription.billingCycle = billingCycle;
+        subscription.nextBillingDate =
+                billingCycle == BillingCycle.YEARLY
+                        ? baseDate.plusYears(1)
+                        : baseDate.plusMonths(1);
 
-        // 기본값 (일단 단순하게)
-        subscription.billingCycle = BillingCycle.MONTHLY;
 
         subscription.subscriptionStatus = SubscriptionStatus.ACTIVE;
 
-        // 다음 결제일 (임시: 한달 뒤)
-        subscription.nextBillingDate = lastPaymentDate.plusMonths(1);
-
-        subscription.createdAt = now;
-        subscription.updatedAt = now;
+        subscription.startDate = baseDate;
 
         return subscription;
-
     }
 
 
