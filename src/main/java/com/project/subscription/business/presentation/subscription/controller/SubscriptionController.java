@@ -53,6 +53,16 @@ public class SubscriptionController {
         return ApiResponse.success(subscription);
     }
 
+    // 구독 자동 생성
+    // complete
+    @PostMapping("/auto")
+    public ApiResponse<List<SubscriptionInternalDto>> autoCreateSubscription(@AuthenticationPrincipal Long userId){
+
+        List<SubscriptionInternalDto> subscriptions = subscriptionService.autoCreateSubscription(userId);
+
+        return ApiResponse.success(subscriptions);
+    }
+
     // 구독 수정
     // complete
     @PatchMapping("/{subscriptionId}")
@@ -111,7 +121,6 @@ public class SubscriptionController {
         return ApiResponse.success(subscriptionSummary);
     }
 
-    // 구독 자동 생성
 
 
 
