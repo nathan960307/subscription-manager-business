@@ -4,5 +4,6 @@ package com.project.subscription.business.domain.subscription.entity;
 public enum BillingStatus {
     SUCCESS,
     FAILED,
-    REFUNDED
+    REFUNDED,
+    UNKNOWN
 }
