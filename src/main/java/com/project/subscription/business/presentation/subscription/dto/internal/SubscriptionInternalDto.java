@@ -20,7 +20,6 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
     private BillingCycle billingCycle;
     private SubscriptionStatus subscriptionStatus;
     private LocalDateTime nextBillingDate;
-    private boolean autoRenew;
 
     // entity -> dto
     public static SubscriptionInternalDto fromEntity(Subscription subscription) {
@@ -32,7 +31,6 @@ public class SubscriptionInternalDto { //구독 서비스 단일 조회 DTO ( en
                 .billingCycle(subscription.getBillingCycle())
                 .subscriptionStatus(subscription.getSubscriptionStatus())
                 .nextBillingDate(subscription.getNextBillingDate())
-                .autoRenew(subscription.isAutoRenew())
                 .build();
     }
 }
