@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -14,4 +15,5 @@ public class SubscriptionCreateRequest {
     private String serviceName; // 구독 서비스 이름
     private BigDecimal price; // 구독 가격
     private BillingCycle billingCycle; // 주기
+    private LocalDateTime startDate; // 시작일
 }
