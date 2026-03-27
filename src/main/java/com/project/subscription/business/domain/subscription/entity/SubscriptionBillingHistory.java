@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -28,7 +29,7 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     private String transactionId; // 외부 결제 고유 ID
 
     @Column(name = "billing_date", nullable = false)
-    private LocalDateTime billingDate; // 실제 결제 시도일
+    private LocalDateTime billingDate; // 결제 시도일
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount; // 결제 금액
@@ -45,16 +46,18 @@ public class SubscriptionBillingHistory { // 구독 결제 이력 테이블 : �
     // 생성
     public static SubscriptionBillingHistory create(Long userId,
                                                     Long subscriptionId,
+                                                    String transactionId,
                                                     LocalDateTime billingDate,
+                                                    BillingStatus billingStatus,
                                                     BigDecimal amount) {
 
         SubscriptionBillingHistory subscriptionBillingHistory = new SubscriptionBillingHistory();
         subscriptionBillingHistory.userId = userId;
         subscriptionBillingHistory.subscriptionId = subscriptionId;
-        //todo billing_period_start, billing_period_end 필드 추가 필요
+        subscriptionBillingHistory.transactionId = transactionId;
         subscriptionBillingHistory.billingDate = billingDate;
         subscriptionBillingHistory.amount = amount;
-        subscriptionBillingHistory.billingStatus = BillingStatus.SUCCESS;
+        subscriptionBillingHistory.billingStatus = billingStatus;
         subscriptionBillingHistory.createdAt = LocalDateTime.now();
 
         return subscriptionBillingHistory;
