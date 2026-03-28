@@ -55,7 +55,7 @@ public class SubscriptionService {
     public SubscriptionInternalDto getSubscriptionDetail(Long userId, Long subscriptionId) {
 
         // 구독 ID 로 해당 서비스 상세 조회
-        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+        Subscription subscription =subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId,subscriptionId)
                 .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(subscription);
@@ -126,7 +126,7 @@ public class SubscriptionService {
                                                       Long subscriptionId,
                                                       SubscriptionUpdateRequest request) {
 
-        Subscription subscription =subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId,subscriptionId)
+        Subscription subscription =subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId,subscriptionId)
                 .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
 
         // 변경 전 값 저장
@@ -177,7 +177,7 @@ public class SubscriptionService {
     @Transactional
     public void deleteSubscription(Long userId, Long subscriptionId) {
 
-        Subscription subscription = subscriptionRepository.findByIdAndUserIdAndDeletedFalse(userId, subscriptionId)
+        Subscription subscription = subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId, subscriptionId)
                 .orElseThrow(() -> new RuntimeException("구독 없음"));
 
 //        subscriptionRepository.delete(subscription); // hard delete
