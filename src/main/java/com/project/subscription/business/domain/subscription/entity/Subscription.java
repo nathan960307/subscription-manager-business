@@ -3,6 +3,8 @@ package com.project.subscription.business.domain.subscription.entity;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -50,9 +52,11 @@ public class Subscription { // 사용자의 현재 구독 상태를 나타내는
     @Column(name = "start_date")
     private LocalDateTime startDate; // 구독 시작일
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 구독 등록일
 
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt; // 구독 수정일
 
