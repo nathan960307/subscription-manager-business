@@ -191,7 +191,7 @@ public class SubscriptionService {
     public List<SubscriptionChangeHistoryInternalDto> getMySubscriptionChangeHistories(Long userId, Long subscriptionId) {
 
         // 사용자,구독 별 변경 내역 조회
-        List<SubscriptionChangeHistory> subscriptionChangeHistories =subscriptionChangeHistoryRepository.findBySubscriptionIdAndUserIdOrderByChangedAtDesc(userId,subscriptionId);
+        List<SubscriptionChangeHistory> subscriptionChangeHistories =subscriptionChangeHistoryRepository.findByUserIdAndSubscriptionIdOrderByChangedAtDesc(userId,subscriptionId);
 
         List<SubscriptionChangeHistoryInternalDto> subscriptionChangeHistoryInternalDtos = subscriptionChangeHistories.stream()
                 .map(SubscriptionChangeHistoryInternalDto::fromEntity)
