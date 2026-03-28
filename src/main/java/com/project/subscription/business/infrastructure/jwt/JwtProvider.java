@@ -1,7 +1,8 @@
 package com.project.subscription.business.infrastructure.jwt;
 
-import com.project.subscription.auth.global.exception.CustomException;
-import com.project.subscription.auth.global.exception.ErrorCode;
+
+import com.project.subscription.business.global.exception.CustomException;
+import com.project.subscription.business.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
