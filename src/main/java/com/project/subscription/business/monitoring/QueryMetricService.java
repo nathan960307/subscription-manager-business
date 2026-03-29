@@ -1,4 +1,4 @@
-package com.project.subscription.monitoring;
+package com.project.subscription.business.monitoring;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;

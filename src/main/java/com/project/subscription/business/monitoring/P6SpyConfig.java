@@ -1,4 +1,4 @@
-package com.project.subscription.monitoring;
+package com.project.subscription.business.monitoring;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

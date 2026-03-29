@@ -1,4 +1,4 @@
-package com.project.subscription.monitoring;
+package com.project.subscription.business.monitoring;
 
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 
