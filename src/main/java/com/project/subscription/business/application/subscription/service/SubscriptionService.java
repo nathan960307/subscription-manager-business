@@ -11,6 +11,7 @@ import com.project.subscription.business.repository.subscription.SubscriptionCat
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
@@ -230,25 +232,24 @@ public class SubscriptionService {
         LocalDate now =  LocalDate.now();
 
         BigDecimal totalAmount = subscriptions.stream()
-                // nextBillingDate가 이번 달인 것만 필터
-                .filter(s -> {
-                    LocalDate billingDate = s.getNextBillingDate().toLocalDate();
-                    return billingDate.getYear() == now.getYear() && billingDate.getMonth() == now.getMonth();
-                })
+                // SubscriptionStatus 가 ACTIVE 인것만 필터
+                .filter(s -> s.getSubscriptionStatus() == SubscriptionStatus.ACTIVE)
                 // 가격만 추출
                 .map(Subscription::getPrice)
                 // 전부 더하기
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        log.info("totalAmount: {}", totalAmount);
+
 
         // monthlyBillingitems 생성
         List<MonthlyBillingItemDto> monthlyBillingItems = subscriptions.stream()
-                .filter(s -> {
-                    LocalDate billingDate = s.getNextBillingDate().toLocalDate();
-                    return billingDate.getYear() == now.getYear() && billingDate.getMonth() == now.getMonth();
-                })
+                // SubscriptionStatus 가 ACTIVE 인것만 필터
+                .filter(s -> s.getSubscriptionStatus() == SubscriptionStatus.ACTIVE)
                 .map(MonthlyBillingItemDto::fromEntity)
                 .toList();
+
+        log.info("monthlyBillingItems: {}", monthlyBillingItems);
 
         SubscriptionSummaryInternalDto subscriptionSummaryInternalDto = SubscriptionSummaryInternalDto.builder()
                 .totalCount(totalCount)
