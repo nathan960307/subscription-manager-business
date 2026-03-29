@@ -13,13 +13,13 @@ public class MonthlyBillingItemDto {
 
     private Long serviceId;
     private BigDecimal price;
-    private LocalDateTime nextBillingDate; // 결제 예정 일자
+    private LocalDateTime startDate; // 이번 달 결제 예정 일자
 
     public static MonthlyBillingItemDto fromEntity(Subscription subscription) {
         return MonthlyBillingItemDto.builder()
                 .serviceId(subscription.getServiceId())
                 .price(subscription.getPrice())
-                .nextBillingDate(subscription.getNextBillingDate())
+                .startDate(subscription.getStartDate())
                 .build();
     }
 }
