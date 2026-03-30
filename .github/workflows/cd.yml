@@ -1,0 +1,56 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [ "CI" ]
+    types: [completed]
+
+
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: JDK 설정
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: gradle 실행 권한
+        run: chmod +x gradlew
+
+      - name: jar 빌드
+        run: ./gradlew clean build -x test
+
+      - name: Docker build
+        run: |
+          docker build -t nathan9603/subscription-business:latest \
+          -t nathan9603/subscription-business:v1.0.0 .
+
+      - name: Docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Docker push
+        run: |
+          docker push nathan9603/subscription-business:latest
+          docker push nathan9603/subscription-business:v1.0.0
+
+      - name: EC2 접속 후 실행
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop business-server || true
+            docker rm business-server || true
+            docker pull nathan9603/subscription-business:latest
+            docker run -d --name business-server -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod -e SERVER_PORT=${{ secrets.SERVER_PORT }} -e DB_URL=${{ secrets.DB_URL }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e REDIS_HOST=${{ secrets.REDIS_HOST }} -e REDIS_PORT=${{ secrets.REDIS_PORT }} -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} nathan9603/subscription-business:latest
