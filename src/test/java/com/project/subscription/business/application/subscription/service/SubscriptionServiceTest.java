@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,6 +89,32 @@ public class SubscriptionServiceTest {
     }
 
     // 구독 생성 실패
+    @Test
+    void createSubscription_fail(){
+
+        // given - data setup
+        SubscriptionCreateRequest request = new SubscriptionCreateRequest(
+                "Netflix",
+                BigDecimal.valueOf(15000),
+                BillingCycle.MONTHLY,
+                LocalDateTime.now()
+        );
+
+        // given - mock setup
+
+        when(subscriptionCatalogRepository.findByNormalizedName(any()))
+                .thenReturn(Optional.empty());
+
+        when(subscriptionCatalogRepository.save(any()))
+                .thenThrow(new RuntimeException());
+
+        // when (실행) & then (검증)
+
+        assertThrows(RuntimeException.class, () -> {
+            subscriptionService.createSubscription(1L, request);
+        });
+
+    }
 
     // 구독 수정 성공
 
