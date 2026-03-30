@@ -1,16 +1,30 @@
 package com.project.subscription.business.application.subscription.service;
 
 
+import com.project.subscription.business.domain.subscription.entity.BillingCycle;
+import com.project.subscription.business.domain.subscription.entity.Subscription;
+import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.repository.external.ExternalPaymentRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionCatalogRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +52,49 @@ public class SubscriptionServiceTest {
 
 
     // 테스트 메서드
+
+    // 구독 생성 성공
+    @Test
+    void createSubscription_success(){
+
+        // given - data setup
+        SubscriptionCreateRequest request = new SubscriptionCreateRequest(
+                "Netflix",
+                BigDecimal.valueOf(15000),
+                BillingCycle.MONTHLY,
+                LocalDateTime.now()
+        );
+
+        // given - mock setup
+
+        when(subscriptionCatalogRepository.findByNormalizedName(any()))
+                .thenReturn(Optional.empty());
+
+        when(subscriptionCatalogRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(subscriptionRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // when (실행)
+        SubscriptionInternalDto result = subscriptionService.createSubscription(1L, request);
+
+        // then (검증)
+        assertNotNull(result);
+
+        verify(subscriptionRepository).save(any(Subscription.class));
+        verify(subscriptionChangeHistoryRepository).save(any());
+
+    }
+
+    // 구독 생성 실패
+
+    // 구독 수정 성공
+
+    // 구독 삭제 성공
+
+    // 구독 자동 생성 성공
+
 
 
 
