@@ -7,6 +7,7 @@ import com.project.subscription.business.repository.subscription.SubscriptionCat
 import com.project.subscription.business.repository.subscription.SubscriptionChangeHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,6 +33,8 @@ public class SubscriptionServiceTest {
     private SubscriptionCatalogRepository subscriptionCatalogRepository;
 
     // test 대상 주입
+    @InjectMocks
+    private SubscriptionService subscriptionService;
 
 
     // 테스트 메서드
