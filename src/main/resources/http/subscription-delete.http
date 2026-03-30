@@ -1,2 +1,4 @@
 ### 구독 삭제 (soft delete)
 DELETE http://localhost:8080/api/v1/subscriptions/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1Iiwicm9sZSI6IlVTRVIiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzc0NzA3MDAxLCJleHAiOjE3NzQ3MDg4MDF9.-vLWAwINgSPgujCDp3SdXD-taF-W8Bwnio7zm3jTbR0
+Content-Type: application/json

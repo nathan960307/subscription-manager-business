@@ -1,0 +1,4 @@
+### 구독 요약 통계
+GET http://localhost:8080/api/v1/subscriptions/summary
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1Iiwicm9sZSI6IlVTRVIiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzc0NzkxMjgwLCJleHAiOjE3NzQ3OTMwODB9.mB3jBe7uP5xr7yO0uaMVwB_MUl5nLWrJcMkrNFVPTS8
+Content-Type: application/json

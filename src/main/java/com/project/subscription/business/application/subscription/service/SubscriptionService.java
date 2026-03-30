@@ -2,6 +2,8 @@ package com.project.subscription.business.application.subscription.service;
 
 import com.project.subscription.business.domain.external.entity.ExternalPayment;
 import com.project.subscription.business.domain.subscription.entity.*;
+import com.project.subscription.business.global.exception.CustomException;
+import com.project.subscription.business.global.exception.ErrorCode;
 import com.project.subscription.business.presentation.subscription.dto.internal.*;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
@@ -58,7 +60,7 @@ public class SubscriptionService {
 
         // 구독 ID 로 해당 서비스 상세 조회
         Subscription subscription =subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId,subscriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBSCRIPTION_NOT_FOUND));
 
         SubscriptionInternalDto subscriptionInternalDto = SubscriptionInternalDto.fromEntity(subscription);
 
@@ -129,7 +131,7 @@ public class SubscriptionService {
                                                       SubscriptionUpdateRequest request) {
 
         Subscription subscription =subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId,subscriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("구독이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBSCRIPTION_NOT_FOUND));
 
         // 변경 전 값 저장
         BigDecimal oldPrice = subscription.getPrice();
@@ -180,7 +182,7 @@ public class SubscriptionService {
     public void deleteSubscription(Long userId, Long subscriptionId) {
 
         Subscription subscription = subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId, subscriptionId)
-                .orElseThrow(() -> new RuntimeException("구독 없음"));
+                .orElseThrow(() -> new CustomException(ErrorCode.SUBSCRIPTION_NOT_FOUND));
 
 //        subscriptionRepository.delete(subscription); // hard delete
         subscription.delete(); // soft delete

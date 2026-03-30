@@ -1,11 +1,4 @@
-### 구독 생성
-POST http://localhost:8080/api/v1/subscriptions
+### 구독 자동 생성
+POST http://localhost:8080/api/v1/subscriptions/auto
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1Iiwicm9sZSI6IlVTRVIiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzc0Nzg3NDUwLCJleHAiOjE3NzQ3ODkyNTB9.9fKqplVxejyPeKmUXLzUy7gKADOy_icAIfn0G4Hl58E
 Content-Type: application/json
-
-{
-  "serviceName": "netflix",
-  "price": 14900.00,
-  "billingCycle": "MONTHLY",
-  "startDate": "2026-03-28T22:40:00"
-}

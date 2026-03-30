@@ -21,6 +21,7 @@ public enum ErrorCode {
     FORBIDDEN(403, 4030, "거부됨"),
     NOT_FOUND(404, 4040, "리소스를 찾을 수 없음"),
     USER_NOT_FOUND(404, 4041, "사용자를 찾을 수 없습니다"),
+    SUBSCRIPTION_NOT_FOUND(404, 4042, "구독을 찾을 수 없습니다"),
     DUPLICATE_EMAIL(409, 4091, "이미 존재하는 이메일입니다."),
 
     // 500번대: 서버 오류
