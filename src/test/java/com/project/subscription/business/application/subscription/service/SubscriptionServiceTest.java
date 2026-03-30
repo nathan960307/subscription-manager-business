@@ -1,6 +1,7 @@
 package com.project.subscription.business.application.subscription.service;
 
 
+import com.project.subscription.business.domain.external.entity.ExternalPayment;
 import com.project.subscription.business.domain.subscription.entity.BillingCycle;
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
@@ -20,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -159,8 +161,78 @@ public class SubscriptionServiceTest {
     }
 
     // 구독 삭제 성공
+    @Test
+    void deleteSubscription_success() {
+
+        // given
+        Long userId = 1L;
+        Long subscriptionId = 1L;
+
+        Subscription subscription = mock(Subscription.class);
+
+        when(subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId, subscriptionId))
+                .thenReturn(Optional.of(subscription));
+
+        // when
+        subscriptionService.deleteSubscription(userId, subscriptionId);
+
+        // then
+        verify(subscription).delete();
+    }
 
     // 구독 자동 생성 성공
+    @Test
+    void autoCreateSubscription_success() {
+
+        // given - data setup
+        Long userId = 1L;
+
+        // given - mock setup
+        ExternalPayment payment1 = mock(ExternalPayment.class);
+        ExternalPayment payment2 = mock(ExternalPayment.class);
+
+        when(payment1.getMerchantName()).thenReturn("Netflix");
+        when(payment2.getMerchantName()).thenReturn("Netflix");
+
+        when(payment1.getTransactionDate()).thenReturn(LocalDateTime.now().minusDays(30));
+        when(payment2.getTransactionDate()).thenReturn(LocalDateTime.now());
+
+        when(payment1.getCreatedAt()).thenReturn(LocalDateTime.now().minusDays(30));
+        when(payment2.getCreatedAt()).thenReturn(LocalDateTime.now());
+
+        when(payment1.getAmount()).thenReturn(BigDecimal.valueOf(15000));
+        when(payment2.getAmount()).thenReturn(BigDecimal.valueOf(15000));
+
+        when(payment1.getTransactionType()).thenReturn("SUCCESS");
+        when(payment2.getTransactionType()).thenReturn("SUCCESS");
+
+        when(payment1.getTransactionId()).thenReturn("tx1");
+        when(payment2.getTransactionId()).thenReturn("tx2");
+
+        when(externalPaymentRepository.findByUserId(userId))
+                .thenReturn(List.of(payment1, payment2));
+
+        when(subscriptionRepository.findByUserIdAndDeletedFalse(userId))
+                .thenReturn(List.of());
+
+        when(subscriptionCatalogRepository.findByNormalizedName(any()))
+                .thenReturn(Optional.empty());
+
+        when(subscriptionCatalogRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        when(subscriptionRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        // when
+        List<SubscriptionInternalDto> result = subscriptionService.autoCreateSubscription(userId);
+
+        // then
+        assertNotNull(result);
+        verify(subscriptionRepository).save(any(Subscription.class));
+        verify(subscriptionBillingHistoryRepository, times(2)).save(any());
+        verify(subscriptionChangeHistoryRepository).save(any());
+    }
 
 
 
