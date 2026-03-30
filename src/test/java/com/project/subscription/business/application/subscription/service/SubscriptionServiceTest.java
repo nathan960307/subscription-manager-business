@@ -5,6 +5,7 @@ import com.project.subscription.business.domain.subscription.entity.BillingCycle
 import com.project.subscription.business.domain.subscription.entity.Subscription;
 import com.project.subscription.business.presentation.subscription.dto.internal.SubscriptionInternalDto;
 import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionCreateRequest;
+import com.project.subscription.business.presentation.subscription.dto.request.SubscriptionUpdateRequest;
 import com.project.subscription.business.repository.external.ExternalPaymentRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionBillingHistoryRepository;
 import com.project.subscription.business.repository.subscription.SubscriptionCatalogRepository;
@@ -24,8 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -117,6 +117,46 @@ public class SubscriptionServiceTest {
     }
 
     // 구독 수정 성공
+    @Test
+    void updateSubscription_success() {
+
+        // given - data setup
+        Long userId = 1L;
+        Long subscriptionId = 1L;
+
+        SubscriptionUpdateRequest request = new SubscriptionUpdateRequest(
+                BigDecimal.valueOf(20000),
+                BillingCycle.YEARLY
+        );
+
+        // given - mock setup
+        Subscription subscription = mock(Subscription.class);
+
+        when(subscription.getPrice())
+                .thenReturn(BigDecimal.valueOf(10000));
+
+        when(subscription.getBillingCycle())
+                .thenReturn(BillingCycle.MONTHLY);
+
+        when(subscriptionRepository.findByUserIdAndIdAndDeletedFalse(userId, subscriptionId))
+                .thenReturn(Optional.of(subscription));
+
+        when(subscriptionRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+
+        // when
+        SubscriptionInternalDto result = subscriptionService.updateSubscription(userId, subscriptionId, request);
+
+        // then
+        assertNotNull(result);
+
+        verify(subscription).changePrice(any());
+        verify(subscription).changeBillingCycle(any());
+
+        verify(subscriptionRepository).save(subscription);
+        verify(subscriptionChangeHistoryRepository, times(2)).save(any());
+    }
 
     // 구독 삭제 성공
 
