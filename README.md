@@ -90,3 +90,6 @@
 
 - Auth Server  
   https://github.com/nathan960307/subscription-manager-auth/tree/main
+
+- 현재 서비스는 AWS EC2 환경에서 운영 중
+- 보안상 실제 주소는 공개하지 않음
